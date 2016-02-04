@@ -1,0 +1,54 @@
+<% if (socials.fb){ %>
+<!-- for Facebook and Google+ -->
+    <% if(socials.fb.title){ 
+    %> <meta property="og:title" content="<%- socials.fb.title %>" />
+    <% } 
+    if(socials.fb.type){
+    %> <meta property="og:type" content="<%- socials.fb.type %>" />
+    <% } 
+    if(socials.fb.image){
+    %> <meta property="og:image" content="<%- socials.fb.image %>" /><!-- 600 x 315 -->
+    <% } 
+    if(socials.fb.url){
+    %> <meta property="og:url" content="<%- socials.fb.url %>" />
+    <% } 
+    if(socials.fb.description){
+    %> <meta property="og:description" content="<%- socials.fb.description %>" />
+    <% } 
+    if(socials.fb.fbAdminID){
+    %> <meta property="fb:admins" content="<%- socials.fb.fbAdminID %>" />
+    <% } 
+    if(socials.fb.articlePubTime){
+    %> <meta property="article:published_time" content="<%- socials.fb.articlePubTime %>" />
+    <% } 
+    if(socials.fb.articleModTime){
+    %> <meta property="article:modified_time" content="<%- socials.fb.articleModTime %>" />
+    <% } 
+    if(socials.fb.articleSection){
+    %> <meta property="article:section" content="<%- socials.fb.articleSection %>" />
+    <% } 
+    if(socials.fb.articleTag){
+    %> <meta property="article:tag" content="<%- socials.fb.articleTag %>" />
+    <% } %>
+<% } %>
+
+<% if (socials.tw){ %>
+<!-- for Twitter -->
+    <% if(socials.tw.card){ %> <meta name="twitter:card" content="<%- socials.tw.card %>">
+    <% } 
+    if(socials.tw.site){
+    %> <meta name="twitter:site" content="<%- socials.tw.site %>">
+    <% } 
+    if(socials.tw.creator){
+    %> <meta name="twitter:creator" content="<%- socials.tw.creator %>">
+    <% } 
+    if(socials.tw.title){
+    %> <meta name="twitter:title" content="<%- socials.tw.title %>">
+    <% } 
+    if(socials.tw.description){
+    %> <meta name="twitter:description" content="<%- socials.tw.description %>">
+    <% } 
+    if(socials.tw.img){
+    %> <meta name="twitter:image:src" content="<%- socials.tw.img %>"> <!--must be min 280*150-->
+    <% } %>
+<% } %>

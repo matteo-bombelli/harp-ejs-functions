@@ -1,0 +1,23 @@
+<% partial("_functions/functions") %><% if(template=="standard"){ %><html class="no-js" lang="<%- MB.locale.getLang() %>">
+<%
+
+    PathBase = "";
+    var numLivelli = current.path.length - 1;
+    for (var i=0; i<numLivelli; i++){
+        PathBase = PathBase + "../";
+    }
+%>
+<%- partial("_moduli/headFull2v/head") %>
+    <body>
+        <!--[if lt IE 8]>
+            <p class="browserupgrade"><%- MB.locale.getTrad("browsehappy") %></p>
+        <![endif]-->
+        <%- yield %>
+    </body>
+</html>
+<% }else if(template=="api"){ %><%- yield %>
+<% }else{ %>
+    <%
+    // still to do
+    %>
+<% } %>

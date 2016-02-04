@@ -1,0 +1,52 @@
+{
+    "globals":{
+        "SiteTitle":"your-site-title",
+        "uri":"your-uri",
+        "BasePath":"",
+        "BaseUrl":"",
+        "crossDomain":true,
+        "AutoreArticoli":{
+            "nome":"Your Name",
+            "facebookPage":"https://www.facebook.com/your-fb-page/",
+            "GooglePlusPage":"https://plus.google.com/your-gplus-profile",
+            "twitterID":"@your-tw-ID"
+        },
+        "logoSito":{
+            "relUrl":true,
+            "url":"",
+            "width":"",
+            "height":""
+        },
+        "Publisher":{
+            "nome":"Publisher Name",
+            "facebookPage":"[https://www.facebook.com/publisher-fb-page/]",
+            "GooglePlusPage":"[https://plus.google.com/publisher-gplus-profile]",
+            "twitterID":"[@publisher-tw-ID]"
+        },
+        "Thumb":{
+            "url":"",
+            "relUrl":true,
+            "width":"",
+            "height":""
+        },
+        "template":"standard",
+        "googleAnalytics":"your-Analytics-code",
+        "gaCustom":false,
+        "socialLinks":{
+            "googlePlus":"https://plus.google.com/your-gplus-profile",
+            "linkedIn":"https://www.linkedin.com/in/[your-linkedin-url]]"
+        },
+        "translations":{
+            "it":{
+                "browsehappy":"Stai usando un browser<strong>non aggiornato</strong>. Per piacere <a href='http://browsehappy.com/'>aggiorna il tuo browser</a> per migliorare la tua esperienza su questo sito.",
+                "Post": "Articolo",
+                "PostList": "Lista articoli"
+            },
+            "en":{
+                "browsehappy":"You are using an <strong>outdated</strong> browser. Please <a href='http://browsehappy.com/'>upgrade your browser</a> to improve your experience.",
+                "Post": "Post",
+                "PostList": "Posts list"
+            }
+        }
+    }
+}

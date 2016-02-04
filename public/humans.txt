@@ -1,0 +1,16 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Matteo Bombelli -- Site Owner, Designer, WebDeveloper --
+
+# THANKS
+
+    HarpJs
+    NodeJs
+
+# TECHNOLOGY COLOPHON
+
+    CSS3, HTML5, JS, JSON
+    jQuery, Modernizr, Normalize.css, Harpjs, EJS

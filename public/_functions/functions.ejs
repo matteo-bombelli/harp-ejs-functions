@@ -1,0 +1,640 @@
+<%
+
+/*
+
+Function to use with harpjs
+
+MB is a global variable, it must include only functions.
+
+include the functions at the top of your layout file
+
+*/
+
+MB = {};
+
+// -----------------------------------------------------------------------------
+
+// general functions
+
+// -----------------------------------------------------------------------------
+
+MB.general = {};
+
+MB.general.ArrayToProps = function(lista, oggetto){
+    if(typeof lista!== "undefined"){
+        if(typeof oggetto!== "undefined"){
+            var oggetto = public;
+        }
+        for(var i in lista){
+            if(typeof oggetto[lista[i]]!=="undefined"){
+                oggetto = oggetto[lista[i]];
+            }else{
+                return false;
+            }
+        }
+        return oggetto;
+    }
+}
+
+MB.general.PathToArray = function(filepath){
+    if(typeof filepath!== "undefined"){
+        var lista = filePath.split("/");
+    }
+    return lista;
+}
+
+// get url to the root of the site
+MB.general.getBaseUrl = function(lang){
+    if(typeof lang === "undefined"){
+        var lang = false;
+    }
+    var baseUrl="";
+    if(!lang){
+        var profondita = current.path.length;  
+    }else{
+        var profondita = (current.path.length - 1);
+    }
+    for(var i=1; i<profondita; i++){
+        baseUrl = baseUrl+"../";
+    }
+    return baseUrl;
+}
+
+// debug variables or the standard variables avaible by harp
+
+MB.general.sdebug = function(variabile){
+    if(typeof variabile === "undefined"){
+        variabile = {
+            "current": current,
+            "public": public,
+            "yield": yield
+        }
+    }
+    return JSON.stringify(variabile);
+}
+
+// -----------------------------------------------------------------------------
+//
+// date functions
+//
+// -----------------------------------------------------------------------------
+
+MB.data = {};
+
+MB.data.ToArray = function(dataCal){
+    var datanum = Date.parse(dataCal);
+    var dataArray = {
+        DD : datanum.getDate(),
+        MM : datanum.getMonth() + 1,
+        YYYY : datanum.getFullYear(),
+        hh : datanum.getHours(),
+        mm : datanum.getMinutes(),
+        ss : datanum.getSeconds(),
+        DW : datanum.gatDay() + 1
+    }
+    return dataArray;
+}
+
+// express date ita way:
+MB.data.it = function(dataCal, tipo, divisore){
+    if (typeof dataCal !== "undefined"){
+    
+        var dataArray = MB.data.ToArray(dataCal);
+        var dataText = dataArray.DD + "/" + dataArray.MM + "/" + dataArray.YYYY;
+        
+        if (typeof tipo !== "undefined"){
+        
+            var giorniSett=["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
+            var mesi=["gennaio","febbraio","marzo","aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
+            
+            if (tipo=="testoCompleto"){
+            
+                dataText = giorniSett[dataArray.DW-1] + ", " + dataArray.DD + " " + 
+                    mesi[dataArray.MM - 1] + " " + dataArray.YYYY + ", alle ore " + 
+                    dataArray.hh + ":" + dataArray.mm;
+                    
+            }else if(tipo=="arrayTesti"){
+            
+                dataText = dataArray;
+                dataText.mese = mesi[dataArray.MM - 1];
+                dataText.giorno = giorniSett[dataArray.DW-1];
+                                            
+            }
+        }
+    }else{
+        var dataText="non hai messo la data";
+    }
+    return dataText;
+}
+
+// express date socials way: ex "2013-09-17T05:59:00+01:00" automatically include +1 cause I'm from Italy, 
+MB.data.DataSOC = function(dataCal){
+    var dataArray = MB.data.ToArray(dataCal);
+    var dataText = MB.n.to_n_digit(dataArray.YYYY, 4) + "-" + MB.n.to2digit(dataArray.MM) + 
+        "-" + MB.n.to2digit(dataArray.DD) + "T" + MB.n.to2digit(dataArray.hh) + 
+        ":" + MB.n.to2digit(dataArray.ss) + "+01:00";
+    return dataText;
+}
+
+// -----------------------------------------------------------------------------
+
+// numbers functions
+
+// -----------------------------------------------------------------------------
+
+MB.n={};
+
+MB.n.to2digit = function(numero){
+    if(numero.toString().length<2){
+        numero = "0" + numero.toString();
+    }
+    return numero;
+}
+    
+MB.n.to_n_digit = function(numero, lunghezza){
+    
+    for(var i = numero.toString().length; i < parseInt(lunghezza); i++){
+        numero = "0" + numero;
+    }
+    return numero;
+}
+
+// -----------------------------------------------------------------------------
+
+// post functions
+
+// -----------------------------------------------------------------------------
+
+MB.posts = {};
+
+MB.posts.stdConfig=function(parametro){
+    MB.locale.getLang(current.path);
+    var postStdConf={
+        folder:"blog",
+        altre:"scrivi qui le altre configurazioni standard per i post"
+    }
+    if(typeof parametro!=="undefined"){
+        return postStdConf[parametro];
+    }else{
+        return postStdConf;
+    }
+    
+}
+
+MB.posts.getconfig = function(parametro){
+    
+    var postConfig = {};
+    
+    if(typeof posts!=="undefined"){
+        if(typeof posts.folder==="undefined"){
+            postConfig.folder = MB.posts.stdConfig("folder");
+        }else{
+            postConfig.folder = posts.folder;
+        }
+    }else{
+        postConfig.folder = MB.posts.stdConfig("folder")
+    }
+    
+    if(typeof parametro!=="undefined"){
+        return postConfig[parametro];
+    }else{
+        return postConfig;
+    }
+}
+
+// this post way is not configurabloe I will work on It
+
+MB.posts.getposts = function(){
+    var posts={};
+    posts.list=[];
+    // var postList = [];
+    posts.Obj = public.blog._data;
+    
+    for(var article in posts.Obj){
+        posts.Obj[article].url="blog/" + article + ".html";
+        posts.list.push(posts.Obj[article]);
+    }
+    
+    posts.list.sort(function(a, b){
+        return Date.parse(b.datePublished) - Date.parse(a.datePublished);
+    });
+    
+    return posts;
+}
+
+// -----------------------------------------------------------------------------
+
+// post functions
+
+// -----------------------------------------------------------------------------
+
+MB.proj={};
+
+MB.proj.stdConfig=function(parametro){
+    var postStdConf={
+        folder:"progetti",
+        altre:"scrivi qui le altre configurazioni standard per i post"
+    }
+    if(typeof parametro!=="undefined"){
+        return postStdConf[parametro];
+    }else{
+        return postStdConf;
+    }
+    
+}
+
+MB.proj.getprojs = function(){
+    var proj = {};
+    proj.list=[];
+    // var postList = [];
+    proj.Obj = public.progetti._data;
+    
+    for(var project in proj.Obj){
+        proj.Obj[article].url="progetti/" + project + ".html";
+        proj.list.push(posts.Obj[article]);
+    }
+    
+    proj.list.sort(function(a, b){
+        return Date.parse(b.datePublished) - Date.parse(a.datePublished);
+    });
+    
+    return proj; 
+}
+
+// -----------------------------------------------------------------------------
+
+// folder/files functions
+
+// -----------------------------------------------------------------------------
+
+
+
+MB.files = {};
+
+MB.files.findSubfolders = function(foldPath){
+
+    var cartRif = MB.general.ArrayToProps(foldPath, public);
+
+    var subfolders = [];
+    for (var k in cartRif){
+        if ((k!="_data")&&(k!="_contents")){
+            subfolders.push(cartRif[k]);
+        }
+    }
+    if(subfolders.length>0){
+        return subfolders;
+    }else{
+        return false;
+    }
+
+}
+
+MB.files.findFileByProperty = function(foldPath, parametro, valore){
+
+    var cartRif = MB.general.ArrayToProps(foldPath, public);
+
+    for (var i in cartRif._contents){
+        if(cartRif._contents[i].indexOf(".html")>-1){
+            var paginaSc = cartRif._contents[i].replace(".html","");
+            if(cartRif._data[paginaSc][parametro]==valore){
+                trovato = true;
+                return paginaSc;
+            }
+        }
+    }
+
+    return false;
+}
+
+
+
+// -----------------------------------------------------------------------------
+
+// languages functions
+
+// -----------------------------------------------------------------------------
+
+MB.locale={};
+
+MB.locale.stdConf = function(parametro){
+    var localeStdConf = {};
+    localeStdConf.objList=[
+        {
+            "tag":"it",
+            "testo":"italiano"
+        },
+        {
+            "tag":"en",
+            "testo":"english"
+        }
+    ];
+    localeStdConf.list=[];
+    for(var i in localeStdConf.objList){
+        localeStdConf.list.push(localeStdConf.objList[i].tag);
+    }
+    
+    localeStdConf.base = localeStdConf.list[0];
+    if(typeof parametro!=="undefined"){
+        return localeStdConf[parametro];
+    }else{
+        return localeStdConf;
+    }
+}
+
+MB.locale.getConf = function(parametro){
+    
+    if(typeof parametro!=="undefined"){
+        var conf = MB.locale.stdConf(parametro);
+        return conf;
+    }else{
+        var conf = MB.locale.stdConf();
+        return conf;
+    }
+}
+
+MB.locale.getLang = function(pagePath){
+    if(typeof pagePath==="undefined"){
+        var pagePath = current.path;
+    }
+    if( MB.locale.getConf("list").indexOf(pagePath[0]) > (-1) ){
+        var lang = pagePath[0];
+    }else{
+        var lang = MB.locale.getConf("base");
+    }
+    return lang;
+}
+
+MB.locale.checkPath = function(lang, pagePath){
+    var lang;
+    var pagePath;
+    
+    if(typeof pagePath==="undefined"){
+        var pagePathA = current.path;
+    }else{
+        var pagePathA = pagePath;
+    }
+    if(!pagePathA){
+        pagePathA=[""];
+    }
+
+    if(typeof lang==="undefined"){
+        var lang = MB.locale.getConf("base");
+    }
+    
+    if( MB.locale.getConf("list").indexOf(pagePathA[0]) > (-1) ){
+        pagePathA.shift();
+    }
+    if(lang==MB.locale.getConf("base")){
+        var langPath="";
+    }else{
+        var langPath = lang;
+    }
+    if(langPath!=""){
+        pagePathA.unshift(langPath);
+    }
+    
+    var pagina = pagePathA.pop();
+    
+    var folder = MB.general.ArrayToProps(pagePathA, public);
+    
+    var errore = false;
+    
+    if(folder){
+        if(folder._contents.indexOf(pagina + ".html")>-1){
+            return (pagePathA.join("/") + "/" + pagina + ".html");
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
+}
+
+MB.locale.getID = function(pagePathB){
+    var pagePathNoFol = pagePathB;
+    var pagina = pagePathNoFol.pop();
+    var folder = MB.general.ArrayToProps(pagePathNoFol, public);
+    
+    if(folder){
+        if(typeof folder._data!=="undefined"){
+            if(typeof folder._data[pagina]!=="undefined"){
+                if(typeof folder._data[pagina].id!=="undefined"){
+                    var identificativo = folder._data[pagina].id;
+                }else{
+                    return false;
+                }
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
+    
+    return false;
+}
+
+MB.locale.getPath = function(lang, pagePath1){
+    if(MB.locale.checkPath(lang, pagePath1) !== false){
+        return MB.locale.checkPath(lang, pagePath1);
+    }else{
+        var pageId = MB.locale.getID(lang, pagePath1);
+        if(id){
+            if(MB.locale.getPathById(lang, id, pagePath1)){
+                return MB.locale.getPathById(lang, id, pagePath1);
+            }else{
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+}
+
+MB.locale.getPathById = function(lang, id, pagePath2){
+    var langFolder = false;
+    var relPath = pagePath2;
+    var partenza = public;
+    var idPrim = id;
+    var trovato = false;
+    var maxdepth = 4;
+    var cartContr = [];
+
+
+
+    var funzCeckFol = function(foldPath, parametro, valore){
+        
+        var cartRif = MB.general.ArrayToProps(foldPath, public);
+        
+        for (var i in cartRif._contents){
+            if(cartRif._contents[i].indexOf(".html")>-1){
+                var paginaSc = cartRif._contents[i].replace(".html","");
+                if(cartRif._data[paginaSc][parametro]==valore){
+                    trovato = true;
+                    return paginaSc;
+                }
+            }
+        }
+        
+        return false;
+    }
+    
+    var findFolders = function(foldPath){
+        
+        var cartRif = MB.general.ArrayToProps(foldPath, public);
+        
+        var subfolders = [];
+        for (var k in cartRif){
+            if ((k!="_data")&&(k!="_contents")){
+                subfolders.push(cartRif[k]);
+            }
+        }
+        if(subfolders.length>0){
+            return subfolders;
+        }else{
+            return false;
+        }
+        
+    }
+
+    // 4 levels --- need to convert it to recursive
+    
+    var pagtrov = false;
+    var cartInside=[];
+    var ciclo=[];
+    
+    var listaLingue = MB.locale.getConf("list");
+
+    listaLingua.split(MB.locale.getConf("base"));
+    
+    if(listaLingua.indexOf(lang)>-1){
+        langFolder = lang;
+    }
+    
+    if(langFolder){
+        var cartContr = [langFolder];
+    }
+    
+    var cartTrov = false;
+    
+    pagtrov = funzCeckFol(cartInside[0],"id",idPrim);
+
+    if(pagtrov){
+        cartTrov = cartinside[0];
+        cartTrov.push(pagtrov);
+    }else{
+
+        var cartelle = [];
+        cartelle[0] = findFolders(cartContr);
+        
+        if(cartelle[0]){
+            for(var lingua in listaLingua){
+                cartelle[0].split(listaLingua[lingua]);
+            }
+            var cartellaBase = cartContr;
+
+            for(ciclo[0] in cartelle[0]){
+                if(!pagtrov){
+                    cartInside[0] = cartellaBase;
+                    cartInside[0].push(cartelle[0][ciclo[0]]);
+
+                    pagtrov = funzCeckFol(cartInside[0],"id",idPrim);
+
+                    if(pagtrov){
+                        cartTrov = cartinside[0];
+                        cartTrov.push(pagtrov);
+                        break;
+                    }
+
+                    if(!pagtrov){
+                        cartelle[1] = findFolders(cartInside[0]);
+                        if(cartelle[1]){
+                            for(ciclo[1] in cartelle[1]){
+                                if(!pagtrov){
+                                    cartInside[1] = cartInside[0];
+                                    cartinside[1].push(cartelle[1][ciclo[1]]);
+                                    pagtrov = funzCeckFol(cartInside[1],"id",idPrim);
+
+                                    if(pagtrov){
+                                        cartTrov = cartinside[1];
+                                        cartTrov.push(pagtrov);
+                                        break;
+                                    }
+
+                                    if(!pagtrov){
+                                        cartelle[2] = findFolders(cartInside[1]);
+                                        if(cartelle[2]){
+                                            for(ciclo[2] in cartelle[2]){
+                                                if(!pagtrov){
+                                                    cartInside[2] = cartInside[1];
+                                                    cartinside[2].push(cartelle[2][ciclo[2]]);
+                                                    pagtrov = funzCeckFol(cartInside[2],"id",idPrim);
+
+                                                    if(pagtrov){
+                                                        cartTrov = cartinside[2];
+                                                        cartTrov.push(pagtrov);
+                                                        break
+                                                    }
+
+                                                    if(!pagtrov){
+                                                        cartelle[3] = findFolders(cartInside[2]);
+                                                        if(cartelle[3]){
+                                                            for(ciclo[3] in cartelle[3]){
+                                                                if(!pagtrov){
+                                                                    cartInside[3] = cartInside[2];
+                                                                    cartinside[3].push(cartelle[3][ciclo[3]]);
+                                                                    pagtrov = funzCeckFol(cartInside[3],"id",idPrim);
+
+                                                                    if(pagtrov){
+                                                                        cartTrov = cartinside[3];
+                                                                        cartTrov.push(pagtrov);
+                                                                        break;
+                                                                    }
+
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+    if(!pagtrov){
+        return false;
+    }
+    else{
+        return cartTrov;
+    }
+    
+}
+
+MB.locale.getTrad = function(testoID){
+    var lingua = MB.locale.getLang(current.path);
+    if(typeof translations!=="undefined"){
+        if(typeof translations[lingua]!=="undefined"){
+            if(typeof translations[lingua][testoID]!=="undefined"){
+                if(translations[lingua][testoID]){
+                    return translations[lingua][testoID];
+                }
+            }
+        }
+    }
+    return false; 
+}
+
+// -----------------------------------------------------------------------------
+
+ %>
