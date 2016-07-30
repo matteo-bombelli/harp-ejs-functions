@@ -1,2 +1,4 @@
 harpCompile.bat
 harpServer.bat
+node_modules/
+oldOnes
