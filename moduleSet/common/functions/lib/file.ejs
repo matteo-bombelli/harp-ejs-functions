@@ -1,0 +1,47 @@
+<%
+
+// -----------------------------------------------------------------------------
+
+// folder/files functions
+
+// -----------------------------------------------------------------------------
+
+MB.files = {};
+
+MB.files.findSubfolders = function(foldPath){
+	
+	var cartRif = MB.general.ArrayToProps(foldPath, public);
+
+	var subfolders = [];
+	for (var k in cartRif){
+		if ((k!="_data")&&(k!="_contents")){
+			subfolders.push(cartRif[k]);
+		}
+	}
+	if(subfolders.length>0){
+		return subfolders;
+	}else{
+		return false;
+	}
+
+}
+
+// needs more work
+MB.files.findFileByProperty = function(foldPath, parametro, valore){
+	
+	var cartRif = MB.general.ArrayToProps(foldPath, public);
+
+	for (var i in cartRif._contents){
+		if(cartRif._contents[i].indexOf(".html")>-1){
+			var paginaSc = cartRif._contents[i].replace(".html","");
+			if(cartRif._data[paginaSc][parametro]==valore){
+				trovato = true;
+				return paginaSc;
+			}
+		}
+	}
+
+	return false;
+}
+
+%>

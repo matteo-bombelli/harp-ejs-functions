@@ -1,0 +1,186 @@
+<%
+// -----------------------------------------------------------------------------
+
+// posts functions
+
+// -----------------------------------------------------------------------------
+
+MB.posts = {};
+
+	MB.posts.customPostEnabled = false;
+
+	MB.posts.listPostType = function(){
+		MBconfigs[lang];
+	}
+
+	MB.posts.configC = function(postType, parametro){
+		var pathA = MB.copyObjJSON(current.path);
+		var lang = MB.locale.getLang(pathA);
+		if(typeof postType ==="undefined"){
+			var postType = "blog";
+		}
+		if (lang == MB.locale.getConf("base") ){
+			var postStdConf = MBconfigs[lang][postType];
+		}else{
+			var postStdConf = MB.copyObjJSON( MBconfigs[lang][postType] );
+			postStdConf["folder"] = lang + "/" + postStdConf["folder"];
+		}
+		if(typeof parametro!=="undefined"){
+			return postStdConf[parametro];
+		}else{
+			return postStdConf;
+		}    
+	}
+
+	MB.posts.stdConfig = function(parametro){
+		var pathA = MB.copyObjJSON(current.path);
+		var lang = MB.locale.getLang(pathA);
+		if(!MB.posts.customPostEnabled){
+			if (lang == MB.locale.getConf("base") ){
+				var postStdConf = MBconfigs[lang]["blog"];
+			}else{
+				var postStdConf = MB.copyObjJSON(MBconfigs[lang]["blog"]);
+				postStdConf["folder"] = lang + "/" + postStdConf["folder"];
+			}
+			if(typeof parametro!=="undefined"){
+				return postStdConf[parametro];
+			}else{
+				return postStdConf;
+			}
+		}else{
+			// add postType parameter before using it
+			// function(postType, parametro)
+			
+			if(typeof postType ==="undefined"){
+				var postType = "blog";
+			}
+			if (lang == MB.locale.getConf("base") ){
+				var postStdConf = MBconfigs[lang][postType];
+			}else{
+				var postStdConf = MB.copyObjJSON( MBconfigs[lang][postType] );
+				postStdConf["folder"] = lang + "/" + postStdConf["folder"];
+			}
+			if(typeof parametro!=="undefined"){
+				return postStdConf[parametro];
+			}else{
+				return postStdConf;
+			}
+		}
+	}
+
+	MB.posts.getconfig = function(parametro){
+		
+		var postConfig = {};
+		
+		if(typeof posts!=="undefined"){
+			if(typeof posts.folder==="undefined"){
+				postConfig.folder = MB.posts.stdConfig("folder");
+			}else{
+				postConfig.folder = posts.folder;
+			}
+		}else{
+			postConfig.folder = MB.posts.stdConfig("folder")
+		}
+		
+		if(typeof parametro!=="undefined"){
+			return postConfig[parametro];
+		}else{
+			return postConfig;
+		}
+	}
+
+	MB.posts.getconfigCustom = function(postType, parametro){
+		if(typeof postType ==="undefined"){
+			var postType = "blog";
+		}
+		var pathA = MB.copyObjJSON(current.path);
+		var lang = MB.locale.getLang(pathA);
+		if (lang == MB.locale.getConf("base") ){
+			var postStdConf = mbfunction[lang][postType];
+		}else{
+			var postStdConf = MB.copyObjJSON( mbfunction[lang][postType] );
+			postStdConf["folder"] = lang + "/" + postStdConf["folder"];
+		}
+		if(typeof parametro!=="undefined"){
+			return postStdConf[parametro];
+		}else{
+			return postStdConf;
+		}
+	}
+
+	// return list of posts sorted by date
+	MB.posts.getposts = function(postType){
+		var posts={};
+		posts.list=[];
+		if(typeof postType ==="undefined"){
+			var postType = "blog"
+		}
+		var postsFolder = MB.posts.getconfigCustom(postType, "folder");
+		
+		posts.Obj = MB.copyObjJSON(MB.general.ArrayToProps( MB.general.PathToArray( postsFolder ), public )["_data"]);
+		
+		for(var article in posts.Obj){
+			if( article!="index" ){
+				posts.Obj[article].url = postsFolder + "/" + article + ".html";
+				// posts.Obj[article].lookinhere = MB.general.ArrayToProps( MB.general.PathToArray( postsFolder ), public )["_data"];
+				posts.list.push(posts.Obj[article]);
+			}
+		}
+		
+		posts.list.sort(function(a, b){
+			return Date.parse(b.datePublished) - Date.parse(a.datePublished);
+		});
+		
+		return posts;
+	}
+
+
+	// sill to test
+	MB.posts.getcategories = function(postType){
+		
+		if(typeof postType ==="undefined"){
+			var postType = "blog";
+		}
+		
+		var categories=[];
+		
+		var posts = MB.posts.getposts(postType);
+		
+		for(i=0; i<posts.list.length; i++){
+			var article = posts.list[i];
+			if(categories.indexOf(article["Categoria"])<0){
+				categories.push(article["Categoria"]);
+				
+			}else{
+				// categories.push(categories.indexOf(article["Categoria"]));
+			}
+		}
+		
+		return categories;
+	}
+
+	MB.posts.getpostsbycategory = function(category, postType){
+		if(typeof postType ==="undefined"){
+			var postType = "blog";
+		}
+		if(typeof category ==="undefined"){
+			return false;
+		}else{
+			var posts = MB.posts.getposts(postType);
+			var postCategory = [];
+			for(i=0; i<posts.list.length; i++){
+				var article = posts.list[i];
+				if(article["Categoria"] == category){
+					postCategory.push(article);
+				}
+			}
+			if(postCategory){
+				return postCategory;
+			}else{
+				return false;
+			}
+			
+			return false;
+		}
+	}
+%>

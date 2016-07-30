@@ -1,0 +1,87 @@
+<%
+	var toRootDev = "../../../";
+	partial(toRootDev + mbfunction.path);
+
+	FileTitle = current.source;
+
+	var headMeta = {
+		divider: " - "
+	};
+
+    /*
+	if (FileTitle == "index"){
+		if(typeof PageTitle !== "undefined"){
+			if(PageTitle==""){
+			   headMeta.divider = "";
+			}
+		}
+	}
+
+	if(typeof SiteTitle === "undefined"){
+		if(typeof PageTitle === "undefined"){
+			TitleTag = "Matteo Bombelli - web developer";
+		}else{
+			TitleTag = PageTitle + headMeta.divider +"Matteo Bombelli - web developer";
+		}
+	}else{
+		if(typeof PageTitle === "undefined"){
+			TitleTag = FileTitle + headMeta.divider + SiteTitle;
+		}else{
+			TitleTag = PageTitle + headMeta.divider + SiteTitle;
+		}
+	}
+
+    */
+	// PathBase = MB.general.getBaseUrl();
+
+	noPathBase = true;
+
+	if(typeof onlyOnline !== "undefined"){
+		if(!onlyOnline){
+			noPathBase=false;
+		}
+	}
+	
+	if(noPathBase){
+	   	urlBase = MB.general.getBaseUrl();
+	}else{
+		urlBase = uri + "/";
+	}
+
+	// Description Definition
+
+	if(typeof PageDescription === "undefined"){
+		PageDescription = false;
+	}
+
+	if(typeof CssJsTop === "undefined"){
+		CSSandJStop = partial("CSSandJS.ejs");
+	}else{
+		CSSandJStop = partial("../../../public/" + CssJsTop);
+	}
+
+	if(typeof socials !== "undefined"){
+		socialsHTML = partial("socialHead.ejs");
+	}
+%>
+<html lang="it">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<title><%- MB.framework.SEO.getTitle() %></title>
+		<% if(PageDescription){ %>
+			<meta name="description" content="<%- PageDescription %>">
+		<% } %>
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<meta name="application-name" content="<%- TitleTag %>" />
+		<meta name="msapplication-config" content="<%- urlBase %>browserconfig.xml" />
+		
+		<link rel="apple-touch-icon" href="<%- uri+'/' %>apple-touch-icon.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="<%- uri+'/' %>apple-touch-icon76.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="<%- uri+'/' %>apple-touch-icon.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="<%- uri+'/' %>apple-touch-icon.png">
+		
+		<%- CSSandJStop %>
+	</head>

@@ -1,54 +1,5 @@
 {
-    "index":{
-        "PageTitle":"",
-        "PageDescription":"",
-        "socials":{
-            "fb":{
-                "title": "[title for facebook]",
-                "type": "website",
-                "image": "[]",
-                "url": "[]",
-                "description": "[open graph description]",
-                "fbAdminID":"[fbAdminID]",
-                "articlePubTime":"[]",
-                "articleModTime":"[]",
-                "articleSection":"[]",
-                "articleTag":"[]"
-            },
-            "tw":{
-                "card":"summary_large_image",
-                "site":"[]",
-                "creator":"[]",
-                "title":"[]",
-                "description":"[]",
-                "img":"[]"
-            }
-        }
-    },
-    "contact":{
-        "PageTitle":"",
-        "PageDescription":"",
-        "socials":{
-            "fb":{
-                "title":"",
-                "type":"",
-                "image":"",
-                "url":"",
-                "description":"",
-                "fbAdminID":"",
-                "articlePubTime":"",
-                "articleModTime":"",
-                "articleSection":"",
-                "articleTag":""
-            },
-            "tw":{
-                "card":"",
-                "site":"",
-                "creator":"",
-                "title":"",
-                "description":"",
-                "img":""
-            }
-        }
-    }
+	"index":{
+		"template":false
+	}
 }

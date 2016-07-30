@@ -1,0 +1,178 @@
+<%
+// -----------------------------------------------------------------------------
+
+// modules functions
+
+// -----------------------------------------------------------------------------
+
+MB.framework={};
+    MB.framework.attivo="attivo";
+	// get a page template
+	MB.framework.gettemplate = function(options){
+		if(typeof options !== "undefined"){
+			if(typeof options.framework !== "undefined"){
+				var framework = options.framework;
+			}else{
+                // var framework = mbfunction.framework;
+            }
+			if(typeof options.name !== "undefined"){
+				var name = options.name;
+			}
+			if(typeof options.vars !== "undefined"){
+				var variables = options.vars;
+			}else{
+				var variables = false;
+			}
+		}
+		if(typeof name !== "undefined"){
+			if(name){
+				if(typeof framework === "undefined"){
+					framework = mbfunction.framework;
+				}else if(!framework){
+					framework = mbfunction.framework;
+				}
+				if(!variables){
+					return partial("../../../"+framework+"/templates/"+name+"/"+name);
+				}else{
+					return partial("../../../"+framework+"/templates/"+name+"/"+name, variables);
+				}
+			}
+		}
+        
+        valori = "ciao";
+        
+		// return false;
+	}
+
+	// get a module
+	MB.framework.getmodule = function(options){
+		if(typeof options !== "undefined"){
+			if(typeof options.framework !== "undefined"){
+				var framework = options.framework;
+			}
+			if(typeof options.name !== "undefined"){
+				var name = options.name;
+			}
+			if(typeof options.vars !== "undefined"){
+				var variables = options.vars;
+			}else{
+				var variables = false;
+			}
+		}
+		if(typeof name !== "undefined"){
+			if(name){
+				if(typeof framework === "undefined"){
+					framework = mbfunction.framework;
+				}else if(!framework){
+					framework = mbfunction.framework;
+				}
+				if(!variables){
+					return partial("../../../"+framework+"/module/"+name+"/"+name);
+				}else{
+					return partial("../../../"+framework+"/module/"+name+"/"+name, variables);
+				}
+			}
+		}
+		return false;
+	}
+
+	// like wordpress function, so you can use it in your css
+	MB.framework.getBodyClass = function(){
+		var bodyClass="";
+
+		if(typeof template !== "undefined"){
+			if(template){
+				bodyClass += " tpl-"+template;
+			}
+		}
+
+		var currentPath = MB.locale.langPath();
+		
+		if(currentPath.length>1){
+			var currentFolder = MB.copyObjJSON(currentPath).pop();
+			bodyClass += " folder-" + currentFolder.join("-");
+		}else{
+			bodyClass += " root";
+		}
+
+		bodyClass += " path-" + currentPath.join("-");
+
+		return bodyClass;
+	}
+    
+    MB.framework.SEO={};
+
+    MB.framework.SEO.getTitle = function(variables){
+        var SEOtitle = false;
+        
+        // standard values
+        var SEOstd = {
+            divider : " - ",
+            path : MB.copyObjJSON(current.source)
+        };
+        
+        var SEO={};
+        
+        if(typeof vars !== "undefined"){
+            for(i in SEOstd){
+                if(typeof variables[i] !== "undefined"){
+                    SEO[i] = variables[i];
+                }else{
+                    SEO[i] = SEOstd[i];
+                }
+            }
+        }else{
+            SEO = MB.copyObjJSON(SEOstd);
+        }
+        
+        if(MB.copyObjJSON(SEO.path) == MB.copyObjJSON(current.source)){
+            if(typeof SiteTitle !== "undefined"){
+                SEO.SiteTitle = SiteTitle;
+            }
+            if(typeof PageTitle !== "undefined"){
+                SEO.PageTitle = PageTitle;
+            }
+        }else{
+            
+        }
+        
+        if(typeof PageTitle !== "undefined"){
+            if(PageTitle){
+                SEOtitle = PageTitle;
+                if(typeof SiteTitle !== "undefined"){
+                    if(SiteTitle){
+                        SEOtitle = SEOtitle + SEO.divider + SiteTitle;
+                    }
+                }
+                return Pagetitle;
+            }
+        } 
+        if(MB.copyObj(current.path)==["index"]){
+            // This is the homepage of the site
+            SEOtitle = SiteTitle;
+            return SEOtitle;
+        }
+        
+        if(!SEOtitle){
+            if(SiteTitle){
+                
+                if(MB.copyObjJSON(current.source) != "index"){
+                    SEOtitle = MB.copyObjJSON(current.source).replace("-", " ");
+                    if(typeof SiteTitle !== "undefined"){
+                        if(SiteTitle){
+                            SEOtitle = SEOtitle + SEO.divider + SiteTitle;
+                        }
+                    }
+                }
+                
+                // last chanche return the Site Title
+                
+                SEOtitle = SiteTitle;
+                return SEOtitle;
+            }
+            
+        }
+        
+    }
+
+%>

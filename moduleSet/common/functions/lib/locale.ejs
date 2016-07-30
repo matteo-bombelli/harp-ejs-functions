@@ -1,0 +1,420 @@
+<%
+// -----------------------------------------------------------------------------
+
+// languages / internazionalization functions
+
+// as standard i use the standard subfolder lanuage indication www.example.com/en 
+// or www.example.com/es, the www.example.com/ is reserved tho the first language 
+// set in list
+
+// -----------------------------------------------------------------------------
+
+MB.locale={};
+
+// define the standard configuration of languages
+MB.locale.stdConf = function(parametro){
+	var localeStdConf = {};
+	if(typeof mbfunction.lang.stdObj === "undefined"){
+		mbfunction.lang.stdObj = [
+			{
+				"tag":"it",
+				"testo":"italiano"
+			},
+			{
+				"tag":"en",
+				"testo":"english"
+			}
+		];
+	}
+
+	localeStdConf.objList = MB.copyObjJSON(mbfunction.lang.stdObj);
+	localeStdConf.list=[];
+
+	for(var i in localeStdConf.objList){
+		localeStdConf.list.push(localeStdConf.objList[i].tag);
+	}
+
+	localeStdConf.base = localeStdConf.list[0];
+	
+	if(typeof parametro!=="undefined"){
+		return localeStdConf[parametro];
+	}else{
+		return localeStdConf;
+	}
+}
+
+MB.locale.getConf = function(parametro){
+	
+	if(typeof parametro!=="undefined"){
+		var conf = MB.locale.stdConf(parametro);
+		return conf;
+	}else{
+		var conf = MB.locale.stdConf();
+		return conf;
+	}
+}
+
+// get the language of the default page or a page passed in array rapresentation
+MB.locale.getLang = function(pagePath){
+	if(typeof pagePath==="undefined"){
+		var pagePath = MB.copyObjJSON(current.path);
+	}
+	if( MB.locale.getConf("list").indexOf(pagePath[0]) > (-1) ){
+		var lang = pagePath[0];
+	}else{
+		var lang = MB.locale.getConf("base");
+	}
+	return lang;
+}
+
+// get array path of the page from the language root
+MB.locale.langPath = function(pagePath){
+	var pagePathR;
+	if(typeof pagePath === "undefined"){
+		pagePathR = MB.copyObjJSON(current.path);
+	}else{
+		pagePathR = MB.copyObjJSON(PagePath);
+	}
+
+	if(MB.locale.getLang(pagePathR) == MB.locale.getConf("base")){
+		pagePathR = pagePathR;
+	}else{
+		pagePathR = pagePathR.shift();
+	}
+
+	return pagePathR;
+}
+
+
+// IN DEVELOPMENT
+MB.locale.getBreadcrumbs = function(pagePath){
+	var breadcrumbs = [];
+	var pagePathR;
+	var pageUrl;
+	var pagePathF;
+	if(typeof pagePath === "undefined"){
+		pagePathR = MB.locale.langPath(MB.copyObjJSON(current.path));
+		pagePathF = MB.copyObjJSON(current.path);
+		pageUrl = MB.locale.basePath(MB.copyObjJSON(current.path));
+	}else{
+		pagePathF = MB.copyObjJSON(current.path);
+		pagePathR = MB.locale.langPath(MB.copyObjJSON(PagePath));
+		pageUrl = MB.locale.basePath(MB.copyObjJSON(PagePath));
+	}
+	var lang = MB.locale.getLang(pagePathF);
+
+	for(var i in pagePathR){
+		var pagename = pagePathR[i];
+		var pageurl = pagename;
+		var pageNameR;
+		var pageF;
+		var arrayFull;
+		if(i== pagePathR.length-1){
+			pageurl = pageurl + ".html";
+			pageF = pagename; 
+		}else{
+			pageurl = pageurl + "/index.html";
+			pagef = "index";
+		}
+
+		breadcrumbs.push({
+			"name":pageName,
+			"url":pageurl
+		});
+	}
+
+	return breadcrumbs;
+}
+
+// get the url to the root of the language
+MB.locale.basePath = function(pagePath){
+	var baseUrl = "";
+	var pagePathR;
+	if(typeof pagePath === "undefined"){
+		pagePathR = MB.locale.langPath(current.path);
+	}else{
+		pagePathR = MB.locale.langPath(PagePath);
+	}
+
+	var deepness = MB.copyObjJSON(pagePathR).length;
+
+	for(var i=1; i<deepness; i++){
+		baseUrl = baseUrl+"../";
+	}
+
+	return baseUrl;
+}
+
+// check if a page exist with the same url and if true returns the url
+MB.locale.checkPath = function(lang, pagePath){
+	var lang;
+	var pagePath;
+	
+	if(typeof pagePath==="undefined"){
+		var pagePathA = MB.copyObjJSON(current.path);
+	}else{
+		var pagePathA = MB.copyObjJSON(pagePath);
+	}
+	if(!pagePathA){
+		pagePathA=[""];
+	}
+
+	if(typeof lang==="undefined"){
+		var lang = MB.locale.getConf("base");
+	}
+	
+	if( MB.locale.getConf("list").indexOf(pagePathA[0]) > (-1) ){
+		pagePathA.shift();
+	}
+	if(lang==MB.locale.getConf("base")){
+		var langPath="";
+	}else{
+		var langPath = lang;
+	}
+	if(langPath!=""){
+		pagePathA.unshift(langPath);
+	}
+	
+	var pagina = pagePathA.pop();
+	
+	var folder = MB.general.ArrayToProps(pagePathA, public);
+	
+	var errore = false;
+	
+	if(folder){
+		if(folder._contents.indexOf(pagina + ".html")>-1){
+			return (pagePathA.join("/") + "/" + pagina + ".html");
+		}else{
+			return false;
+		}
+	}else{
+		return false;
+	}
+}
+
+// check if the page has an ID defined in the _data.json file
+MB.locale.getID = function(pagePathB){
+	var pagePathNoFol = MB.copyObjJSON(pagePathB);
+	var pagina = pagePathNoFol.pop();
+	var folder = MB.general.ArrayToProps(pagePathNoFol, public);
+	
+	if(folder){
+		if(typeof folder._data!=="undefined"){
+			if(typeof folder._data[pagina]!=="undefined"){
+				if(typeof folder._data[pagina].id!=="undefined"){
+					var identificativo = folder._data[pagina].id;
+				}else{
+					return false;
+				}
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}else{
+		return false;
+	}
+	
+	return false;
+}
+
+// this is the starting point to found pages in other languages
+MB.locale.getPath = function(lang, pagePath1){
+	if(MB.locale.checkPath(lang, pagePath1) !== false){
+		return MB.locale.checkPath(lang, pagePath1);
+	}else{
+		var pageId = MB.locale.getID(lang, pagePath1);
+		if(id){
+			if(MB.locale.getPathById(lang, id, pagePath1)){
+				return MB.locale.getPathById(lang, id, pagePath1);
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+}
+
+// the heart of my problem: found the page that has the same id in other languages.
+MB.locale.getPathById = function(lang, id, pagePath2){
+	var langFolder = false;
+	var relPath = MB.copyObjJSON(pagePath2);
+	var partenza = MB.copyObjJSON(public);
+	var idPrim = id;
+	var trovato = false;
+	var maxdepth = 4;
+	var cartContr = [];
+	var funzCeckFol = function(foldPath, parametro, valore){
+		
+		var cartRif = MB.general.ArrayToProps(foldPath, public);
+		
+		for (var i in cartRif._contents){
+			if(cartRif._contents[i].indexOf(".html")>-1){
+				var paginaSc = cartRif._contents[i].replace(".html","");
+				if(cartRif._data[paginaSc][parametro]==valore){
+					trovato = true;
+					return paginaSc;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	var findFolders = function(foldPath){
+		
+		var cartRif = MB.general.ArrayToProps(foldPath, public);
+		
+		var subfolders = [];
+		for (var k in cartRif){
+			if ((k!="_data")&&(k!="_contents")){
+				subfolders.push(cartRif[k]);
+			}
+		}
+		if(subfolders.length>0){
+			return subfolders;
+		}else{
+			return false;
+		}
+		
+	}
+
+	// 4 levels --- sorry i don't know ho to make it recursive
+	
+	var pagtrov = false;
+	var cartInside=[];
+	var ciclo=[];
+	
+	var listaLingue = MB.locale.getConf("list");
+
+	listaLingua.split(MB.locale.getConf("base"));
+	
+	if(listaLingua.indexOf(lang)>-1){
+		langFolder = lang;
+	}
+	
+	if(langFolder){
+		var cartContr = [langFolder];
+	}
+	
+	var cartTrov = false;
+	
+	pagtrov = funzCeckFol(cartInside[0],"id",idPrim);
+
+	if(pagtrov){
+		cartTrov = cartinside[0];
+		cartTrov.push(pagtrov);
+	}else{
+
+		var cartelle = [];
+		cartelle[0] = findFolders(cartContr);
+		
+		if(cartelle[0]){
+			for(var lingua in listaLingua){
+				cartelle[0].split(listaLingua[lingua]);
+			}
+			var cartellaBase = cartContr;
+
+			for(ciclo[0] in cartelle[0]){
+				if(!pagtrov){
+					cartInside[0] = cartellaBase;
+					cartInside[0].push(cartelle[0][ciclo[0]]);
+
+					pagtrov = funzCeckFol(cartInside[0],"id",idPrim);
+
+					if(pagtrov){
+						cartTrov = cartinside[0];
+						cartTrov.push(pagtrov);
+						break;
+					}
+
+					if(!pagtrov){
+						cartelle[1] = findFolders(cartInside[0]);
+						if(cartelle[1]){
+							for(ciclo[1] in cartelle[1]){
+								if(!pagtrov){
+									cartInside[1] = cartInside[0];
+									cartinside[1].push(cartelle[1][ciclo[1]]);
+									pagtrov = funzCeckFol(cartInside[1],"id",idPrim);
+
+									if(pagtrov){
+										cartTrov = cartinside[1];
+										cartTrov.push(pagtrov);
+										break;
+									}
+
+									if(!pagtrov){
+										cartelle[2] = findFolders(cartInside[1]);
+										if(cartelle[2]){
+											for(ciclo[2] in cartelle[2]){
+												if(!pagtrov){
+													cartInside[2] = cartInside[1];
+													cartinside[2].push(cartelle[2][ciclo[2]]);
+													pagtrov = funzCeckFol(cartInside[2],"id",idPrim);
+
+													if(pagtrov){
+														cartTrov = cartinside[2];
+														cartTrov.push(pagtrov);
+														break
+													}
+
+													if(!pagtrov){
+														cartelle[3] = findFolders(cartInside[2]);
+														if(cartelle[3]){
+															for(ciclo[3] in cartelle[3]){
+																if(!pagtrov){
+																	cartInside[3] = cartInside[2];
+																	cartinside[3].push(cartelle[3][ciclo[3]]);
+																	pagtrov = funzCeckFol(cartInside[3],"id",idPrim);
+
+																	if(pagtrov){
+																		cartTrov = cartinside[3];
+																		cartTrov.push(pagtrov);
+																		break;
+																	}
+
+																}
+															}
+														}
+													}
+
+												}
+											}
+										}
+									}
+
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if(!pagtrov){
+		return false;
+	}
+	else{
+		return cartTrov;
+	}
+}
+
+// get translations of specific terms set into harp.json to get them globally
+MB.locale.getTrad = function(testoID){
+	var lingua = MB.locale.getLang(current.path);
+	if(typeof translations!=="undefined"){
+		if(typeof translations[lingua]!=="undefined"){
+			if(typeof translations[lingua][testoID]!=="undefined"){
+				if(translations[lingua][testoID]){
+					return translations[lingua][testoID];
+				}
+			}
+		}
+	}
+	return false; 
+}
+
+
+%>

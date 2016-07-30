@@ -1,0 +1,21 @@
+<%
+var MBlibraries = false;
+if(typeof mbfunction !== "undefined"){
+    if(typeof mbfunction.libraries !== "undefined"){
+        MBlibraries = true;
+        
+        // if(typeof MB === "undefined"){
+            MB={};
+            for(var i in mbfunction.libraries){
+                %><%- partial("lib/"+mbfunction.libraries[i]); %><%
+            }
+        // }
+        
+    }
+}
+if(!MBlibraries){
+    if(typeof MB === "undefined"){
+        partial(functions.ejs);
+    }
+}
+%>

@@ -1,0 +1,936 @@
+<%
+/*
+
+Hello I'm [Matteo Bombelli](http://sid.bombus.modxcloud.com/?from=harpfunctions)
+
+# Function to use with harpjs
+
+MB is a global variable, it must include only functions.
+
+include the functions at the top of your layout file
+
+
+TODOS:
+*   a lot of coding :)
+
+*   put configurations/standard datas in the in the harp.json file
+
+*/
+
+MB = {};
+
+// -----------------------------------------------------------------------------
+//
+// polyfills
+//
+// -----------------------------------------------------------------------------
+
+// simplier than shallow copy
+MB.copyObjJSON = function(obj1){ 
+	return JSON.parse(JSON.stringify(obj1)); 
+}
+
+// get relative path to the base if you don't want to use absolute path 
+MB.BasePath = function(){
+	/*
+    var PathBase = "";
+    var numLivelli = current.path.length - 1;
+    for (var i=0; i<numLivelli; i++){
+        PathBase = PathBase + "../";
+    }
+	return PathBase
+	*/
+}
+
+MB.checkUnderscore = function(){
+	if(typeof _ === "undefined"){
+		return false;
+	}else{
+		return true;
+	}
+	return true
+}
+
+// -----------------------------------------------------------------------------
+//
+// general functions
+//
+// -----------------------------------------------------------------------------
+
+MB.general = {};
+
+	// convert array to object keys : ["foo","bar"] -> foo.bar, remember to use public as standard object
+	MB.general.ArrayToProps = function(lista, oggetto){
+		var lista2;
+		var oggetto2;
+
+		if(typeof lista !== "undefined"){
+			if(typeof oggetto === "undefined"){
+				oggetto2 = MB.copyObjJSON(public);
+			}else{
+				oggetto2 = MB.copyObjJSON(oggetto);
+			}
+			lista2 = MB.copyObjJSON(lista);
+			for(var i in lista2){
+				if(typeof oggetto[lista2[i]]!=="undefined"){
+					oggetto2 = oggetto2[lista2[i]];
+				}else{
+					return false;
+				}
+			}
+			return oggetto2;
+		}
+	}
+
+	// convert path to arrays : "foo/bar" -> ["foo","bar"]
+	MB.general.PathToArray = function(filepath){
+		var lista = false;
+		if(typeof filepath !== "undefined"){
+			if(typeof filepath === "string"){
+				var lista = filepath.split("/");
+			}
+		}
+		return lista;
+	}
+
+	// get url to the root of the site
+	MB.general.getBaseUrl = function(lang){
+		if(typeof lang === "undefined"){
+			var lang = false;
+		}
+		var baseUrl="";
+		if(!lang){
+			var profondita = MB.copyObjJSON(current.path).length;  
+		}else{
+			var profondita = MB.copyObjJSON(current.path).length - 1;
+		}
+		for(var i=1; i<profondita; i++){
+			baseUrl = baseUrl+"../";
+		}
+		return baseUrl;
+	}
+
+	// debug variables or the standard variables avaible by harp
+	MB.general.sdebug = function(variabile){
+		
+		if(typeof variabile === "undefined"){
+			variabile = {
+				"current": MB.copyObjJSON(current),
+				"public": MB.copyObjJSON(public),
+				"yield": yield
+			}
+		}
+		return JSON.stringify(variabile);
+	}
+
+
+// -----------------------------------------------------------------------------
+//
+// date functions
+//
+// -----------------------------------------------------------------------------
+
+MB.data = {};
+
+	MB.data.ToArray = function(dataCal){
+		
+		var datanum = Date.parse(dataCal);
+		var dataArray = {
+			DD : datanum.getDate(),
+			MM : datanum.getMonth() + 1,
+			YYYY : datanum.getFullYear(),
+			hh : datanum.getHours(),
+			mm : datanum.getMinutes(),
+			ss : datanum.getSeconds(),
+			DW : datanum.gatDay() + 1
+		}
+		return dataArray;
+	}
+
+	// express date italian way:
+	MB.data.it = function(dataCal, tipo, divisore){
+		
+		if (typeof dataCal !== "undefined"){
+		
+			var dataArray = MB.data.ToArray(dataCal);
+			var dataText = dataArray.DD + "/" + dataArray.MM + "/" + dataArray.YYYY;
+			
+			if (typeof tipo !== "undefined"){
+			
+				var giorniSett=["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
+				var mesi=["gennaio","febbraio","marzo","aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
+				
+				if (tipo=="testoCompleto"){
+				
+					dataText = giorniSett[dataArray.DW-1] + ", " + dataArray.DD + " " + 
+						mesi[dataArray.MM - 1] + " " + dataArray.YYYY + ", alle ore " + 
+						dataArray.hh + ":" + dataArray.mm;
+						
+				}else if(tipo=="arrayTesti"){
+				
+					dataText = dataArray;
+					dataText.mese = mesi[dataArray.MM - 1];
+					dataText.giorno = giorniSett[dataArray.DW-1];
+												
+				}
+			}
+		}else{
+			var dataText="non hai messo la data";
+		}
+		return dataText;
+	}
+
+	// express date socials way: ex "2013-09-17T05:59:00+01:00" automatically include +1 cause I'm from Italy, 
+	MB.data.DataSOC = function(dataCal, timeshift){
+		
+		if(typeof timeshift === "undefined"){
+			timeshift = "+01:00";
+		}
+		var dataArray = MB.data.ToArray(dataCal);
+		var dataText = MB.n.to_n_digit(dataArray.YYYY, 4) + "-" + MB.n.to2digit(dataArray.MM) + 
+			"-" + MB.n.to2digit(dataArray.DD) + "T" + MB.n.to2digit(dataArray.hh) + 
+			":" + MB.n.to2digit(dataArray.ss) + timeshift;
+		return dataText;
+	}
+
+
+// -----------------------------------------------------------------------------
+//
+// numbers functions
+//
+// -----------------------------------------------------------------------------
+
+MB.n={};
+
+	MB.n.to2digit = function(numero){
+		
+		if(numero.toString().length<2){
+			numero = "0" + numero.toString();
+		}
+		return numero;
+	}
+		
+	MB.n.to_n_digit = function(numero, lunghezza){
+		
+		var numero2;
+		
+		if(numero.toString().length <= lunghezza){
+			for(var i = numero.toString().length; i < parseInt(lunghezza); i++){
+				numero2 = "0" + numero;
+			}
+		}else{
+			numero2 = numero.toString().slice((numero.toString().length-lunghezza), numero.toString().length)
+		}
+		return numero2;
+	}
+
+
+// -----------------------------------------------------------------------------
+
+// posts functions
+
+// -----------------------------------------------------------------------------
+
+MB.posts = {};
+
+	MB.posts.customPostEnabled = false;
+
+	MB.posts.listPostType = function(){
+		MBconfigs[lang];
+	}
+
+	MB.posts.configC = function(postType, parametro){
+		var pathA = MB.copyObjJSON(current.path);
+		var lang = MB.locale.getLang(pathA);
+		if(typeof postType ==="undefined"){
+			var postType = "blog";
+		}
+		if (lang == MB.locale.getConf("base") ){
+			var postStdConf = MBconfigs[lang][postType];
+		}else{
+			var postStdConf = MB.copyObjJSON( MBconfigs[lang][postType] );
+			postStdConf["folder"] = lang + "/" + postStdConf["folder"];
+		}
+		if(typeof parametro!=="undefined"){
+			return postStdConf[parametro];
+		}else{
+			return postStdConf;
+		}    
+	}
+
+	MB.posts.stdConfig = function(parametro){
+		var pathA = MB.copyObjJSON(current.path);
+		var lang = MB.locale.getLang(pathA);
+		if(!MB.posts.customPostEnabled){
+			if (lang == MB.locale.getConf("base") ){
+				var postStdConf = MBconfigs[lang]["blog"];
+			}else{
+				var postStdConf = MB.copyObjJSON(MBconfigs[lang]["blog"]);
+				postStdConf["folder"] = lang + "/" + postStdConf["folder"];
+			}
+			if(typeof parametro!=="undefined"){
+				return postStdConf[parametro];
+			}else{
+				return postStdConf;
+			}
+		}else{
+			// add postType parameter before using it
+			// function(postType, parametro)
+			
+			if(typeof postType ==="undefined"){
+				var postType = "blog";
+			}
+			if (lang == MB.locale.getConf("base") ){
+				var postStdConf = MBconfigs[lang][postType];
+			}else{
+				var postStdConf = MB.copyObjJSON( MBconfigs[lang][postType] );
+				postStdConf["folder"] = lang + "/" + postStdConf["folder"];
+			}
+			if(typeof parametro!=="undefined"){
+				return postStdConf[parametro];
+			}else{
+				return postStdConf;
+			}
+		}
+	}
+
+	MB.posts.getconfig = function(parametro){
+		
+		var postConfig = {};
+		
+		if(typeof posts!=="undefined"){
+			if(typeof posts.folder==="undefined"){
+				postConfig.folder = MB.posts.stdConfig("folder");
+			}else{
+				postConfig.folder = posts.folder;
+			}
+		}else{
+			postConfig.folder = MB.posts.stdConfig("folder")
+		}
+		
+		if(typeof parametro!=="undefined"){
+			return postConfig[parametro];
+		}else{
+			return postConfig;
+		}
+	}
+
+	MB.posts.getconfigCustom = function(postType, parametro){
+		if(typeof postType ==="undefined"){
+			var postType = "blog";
+		}
+		var pathA = MB.copyObjJSON(current.path);
+		var lang = MB.locale.getLang(pathA);
+		if (lang == MB.locale.getConf("base") ){
+			var postStdConf = mbfunction[lang][postType];
+		}else{
+			var postStdConf = MB.copyObjJSON( mbfunction[lang][postType] );
+			postStdConf["folder"] = lang + "/" + postStdConf["folder"];
+		}
+		if(typeof parametro!=="undefined"){
+			return postStdConf[parametro];
+		}else{
+			return postStdConf;
+		}
+	}
+
+	// return list of posts sorted by date
+	MB.posts.getposts = function(postType){
+		var posts={};
+		posts.list=[];
+		if(typeof postType ==="undefined"){
+			var postType = "blog"
+		}
+		var postsFolder = MB.posts.getconfigCustom(postType, "folder");
+		
+		posts.Obj = MB.copyObjJSON(MB.general.ArrayToProps( MB.general.PathToArray( postsFolder ), public )["_data"]);
+		
+		for(var article in posts.Obj){
+			if( article!="index" ){
+				posts.Obj[article].url = postsFolder + "/" + article + ".html";
+				// posts.Obj[article].lookinhere = MB.general.ArrayToProps( MB.general.PathToArray( postsFolder ), public )["_data"];
+				posts.list.push(posts.Obj[article]);
+			}
+		}
+		
+		posts.list.sort(function(a, b){
+			return Date.parse(b.datePublished) - Date.parse(a.datePublished);
+		});
+		
+		return posts;
+	}
+
+
+	// sill to test
+	MB.posts.getcategories = function(postType){
+		
+		if(typeof postType ==="undefined"){
+			var postType = "blog";
+		}
+		
+		var categories=[];
+		
+		var posts = MB.posts.getposts(postType);
+		
+		for(i=0; i<posts.list.length; i++){
+			var article = posts.list[i];
+			if(categories.indexOf(article["Categoria"])<0){
+				categories.push(article["Categoria"]);
+				
+			}else{
+				// categories.push(categories.indexOf(article["Categoria"]));
+			}
+		}
+		
+		return categories;
+	}
+
+	MB.posts.getpostsbycategory = function(category, postType){
+		if(typeof postType ==="undefined"){
+			var postType = "blog";
+		}
+		if(typeof category ==="undefined"){
+			return false;
+		}else{
+			var posts = MB.posts.getposts(postType);
+			var postCategory = [];
+			for(i=0; i<posts.list.length; i++){
+				var article = posts.list[i];
+				if(article["Categoria"] == category){
+					postCategory.push(article);
+				}
+			}
+			if(postCategory){
+				return postCategory;
+			}else{
+				return false;
+			}
+			
+			return false;
+		}
+	}
+// -----------------------------------------------------------------------------
+
+// project functions
+
+// -----------------------------------------------------------------------------
+
+// not started for now, better convert post functions to configurable for different "post types" ;)
+MB.proj={};
+
+MB.proj.stdConfig = function(parametro){
+	var postStdConf={
+		folder:"progetti",
+		altre:"scrivi qui le altre configurazioni standard per i post"
+	}
+	if(typeof parametro!=="undefined"){
+		return postStdConf[parametro];
+	}else{
+		return postStdConf;
+	}
+	
+}
+
+MB.proj.getprojs = function(){
+	var proj = {};
+	proj.list=[];
+	// var postList = [];
+	proj.Obj = MB.copyObjJSON(public["progetti"]._data);
+	
+	for(var project in proj.Obj){
+		proj.Obj[article].url="progetti/" + project + ".html";
+		proj.list.push(posts.Obj[article]);
+	}
+	
+	proj.list.sort(function(a, b){
+		return Date.parse(b.datePublished) - Date.parse(a.datePublished);
+	});
+	
+	return proj; 
+}
+
+
+// -----------------------------------------------------------------------------
+
+// folder/files functions
+
+// -----------------------------------------------------------------------------
+
+MB.files = {};
+
+MB.files.findSubfolders = function(foldPath){
+	
+	var cartRif = MB.general.ArrayToProps(foldPath, public);
+
+	var subfolders = [];
+	for (var k in cartRif){
+		if ((k!="_data")&&(k!="_contents")){
+			subfolders.push(cartRif[k]);
+		}
+	}
+	if(subfolders.length>0){
+		return subfolders;
+	}else{
+		return false;
+	}
+
+}
+
+
+// needs more work
+MB.files.findFileByProperty = function(foldPath, parametro, valore){
+	
+	var cartRif = MB.general.ArrayToProps(foldPath, public);
+
+	for (var i in cartRif._contents){
+		if(cartRif._contents[i].indexOf(".html")>-1){
+			var paginaSc = cartRif._contents[i].replace(".html","");
+			if(cartRif._data[paginaSc][parametro]==valore){
+				trovato = true;
+				return paginaSc;
+			}
+		}
+	}
+
+	return false;
+}
+
+
+// -----------------------------------------------------------------------------
+
+// languages / internazionalization functions
+
+// as standard i use the standard subfolder lanuage indication www.example.com/en 
+// or www.example.com/es, the www.example.com/ is reserved tho the first language 
+// set in list
+
+// -----------------------------------------------------------------------------
+
+MB.locale={};
+
+// define the standard configuration of languages
+MB.locale.stdConf = function(parametro){
+	var localeStdConf = {};
+	if(typeof mbfunction.lang.stdObj === "undefined"){
+		mbfunction.lang.stdObj = [
+			{
+				"tag":"it",
+				"testo":"italiano"
+			},
+			{
+				"tag":"en",
+				"testo":"english"
+			}
+		];
+	}
+
+	localeStdConf.objList = MB.copyObjJSON(mbfunction.lang.stdObj);
+	localeStdConf.list=[];
+
+	for(var i in localeStdConf.objList){
+		localeStdConf.list.push(localeStdConf.objList[i].tag);
+	}
+
+	localeStdConf.base = localeStdConf.list[0];
+	
+	if(typeof parametro!=="undefined"){
+		return localeStdConf[parametro];
+	}else{
+		return localeStdConf;
+	}
+}
+
+MB.locale.getConf = function(parametro){
+	
+	if(typeof parametro!=="undefined"){
+		var conf = MB.locale.stdConf(parametro);
+		return conf;
+	}else{
+		var conf = MB.locale.stdConf();
+		return conf;
+	}
+}
+
+// get the language of the default page or a page passed in array rapresentation
+MB.locale.getLang = function(pagePath){
+	if(typeof pagePath==="undefined"){
+		var pagePath = MB.copyObjJSON(current.path);
+	}
+	if( MB.locale.getConf("list").indexOf(pagePath[0]) > (-1) ){
+		var lang = pagePath[0];
+	}else{
+		var lang = MB.locale.getConf("base");
+	}
+	return lang;
+}
+
+// check if a page exist with the same url and if true returns the url
+MB.locale.checkPath = function(lang, pagePath){
+	var lang;
+	var pagePath;
+	
+	if(typeof pagePath==="undefined"){
+		var pagePathA = MB.copyObjJSON(current.path);
+	}else{
+		var pagePathA = MB.copyObjJSON(pagePath);
+	}
+	if(!pagePathA){
+		pagePathA=[""];
+	}
+
+	if(typeof lang==="undefined"){
+		var lang = MB.locale.getConf("base");
+	}
+	
+	if( MB.locale.getConf("list").indexOf(pagePathA[0]) > (-1) ){
+		pagePathA.shift();
+	}
+	if(lang==MB.locale.getConf("base")){
+		var langPath="";
+	}else{
+		var langPath = lang;
+	}
+	if(langPath!=""){
+		pagePathA.unshift(langPath);
+	}
+	
+	var pagina = pagePathA.pop();
+	
+	var folder = MB.general.ArrayToProps(pagePathA, public);
+	
+	var errore = false;
+	
+	if(folder){
+		if(folder._contents.indexOf(pagina + ".html")>-1){
+			return (pagePathA.join("/") + "/" + pagina + ".html");
+		}else{
+			return false;
+		}
+	}else{
+		return false;
+	}
+}
+
+// check if the page has an ID defined in the _data.json file
+MB.locale.getID = function(pagePathB){
+	var pagePathNoFol = MB.copyObjJSON(pagePathB);
+	var pagina = pagePathNoFol.pop();
+	var folder = MB.general.ArrayToProps(pagePathNoFol, public);
+	
+	if(folder){
+		if(typeof folder._data!=="undefined"){
+			if(typeof folder._data[pagina]!=="undefined"){
+				if(typeof folder._data[pagina].id!=="undefined"){
+					var identificativo = folder._data[pagina].id;
+				}else{
+					return false;
+				}
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}else{
+		return false;
+	}
+	
+	return false;
+}
+
+// this is the starting point to found pages in other languages
+MB.locale.getPath = function(lang, pagePath1){
+	if(MB.locale.checkPath(lang, pagePath1) !== false){
+		return MB.locale.checkPath(lang, pagePath1);
+	}else{
+		var pageId = MB.locale.getID(lang, pagePath1);
+		if(id){
+			if(MB.locale.getPathById(lang, id, pagePath1)){
+				return MB.locale.getPathById(lang, id, pagePath1);
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+	}
+}
+
+// the heart of my problem: found the page that has the same id in other languages.
+MB.locale.getPathById = function(lang, id, pagePath2){
+	var langFolder = false;
+	var relPath = MB.copyObjJSON(pagePath2);
+	var partenza = MB.copyObjJSON(public);
+	var idPrim = id;
+	var trovato = false;
+	var maxdepth = 4;
+	var cartContr = [];
+	var funzCeckFol = function(foldPath, parametro, valore){
+		
+		var cartRif = MB.general.ArrayToProps(foldPath, public);
+		
+		for (var i in cartRif._contents){
+			if(cartRif._contents[i].indexOf(".html")>-1){
+				var paginaSc = cartRif._contents[i].replace(".html","");
+				if(cartRif._data[paginaSc][parametro]==valore){
+					trovato = true;
+					return paginaSc;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	var findFolders = function(foldPath){
+		
+		var cartRif = MB.general.ArrayToProps(foldPath, public);
+		
+		var subfolders = [];
+		for (var k in cartRif){
+			if ((k!="_data")&&(k!="_contents")){
+				subfolders.push(cartRif[k]);
+			}
+		}
+		if(subfolders.length>0){
+			return subfolders;
+		}else{
+			return false;
+		}
+		
+	}
+
+	// 4 levels --- sorry i don't know ho to make it recursive
+	
+	var pagtrov = false;
+	var cartInside=[];
+	var ciclo=[];
+	
+	var listaLingue = MB.locale.getConf("list");
+
+	listaLingua.split(MB.locale.getConf("base"));
+	
+	if(listaLingua.indexOf(lang)>-1){
+		langFolder = lang;
+	}
+	
+	if(langFolder){
+		var cartContr = [langFolder];
+	}
+	
+	var cartTrov = false;
+	
+	pagtrov = funzCeckFol(cartInside[0],"id",idPrim);
+
+	if(pagtrov){
+		cartTrov = cartinside[0];
+		cartTrov.push(pagtrov);
+	}else{
+
+		var cartelle = [];
+		cartelle[0] = findFolders(cartContr);
+		
+		if(cartelle[0]){
+			for(var lingua in listaLingua){
+				cartelle[0].split(listaLingua[lingua]);
+			}
+			var cartellaBase = cartContr;
+
+			for(ciclo[0] in cartelle[0]){
+				if(!pagtrov){
+					cartInside[0] = cartellaBase;
+					cartInside[0].push(cartelle[0][ciclo[0]]);
+
+					pagtrov = funzCeckFol(cartInside[0],"id",idPrim);
+
+					if(pagtrov){
+						cartTrov = cartinside[0];
+						cartTrov.push(pagtrov);
+						break;
+					}
+
+					if(!pagtrov){
+						cartelle[1] = findFolders(cartInside[0]);
+						if(cartelle[1]){
+							for(ciclo[1] in cartelle[1]){
+								if(!pagtrov){
+									cartInside[1] = cartInside[0];
+									cartinside[1].push(cartelle[1][ciclo[1]]);
+									pagtrov = funzCeckFol(cartInside[1],"id",idPrim);
+
+									if(pagtrov){
+										cartTrov = cartinside[1];
+										cartTrov.push(pagtrov);
+										break;
+									}
+
+									if(!pagtrov){
+										cartelle[2] = findFolders(cartInside[1]);
+										if(cartelle[2]){
+											for(ciclo[2] in cartelle[2]){
+												if(!pagtrov){
+													cartInside[2] = cartInside[1];
+													cartinside[2].push(cartelle[2][ciclo[2]]);
+													pagtrov = funzCeckFol(cartInside[2],"id",idPrim);
+
+													if(pagtrov){
+														cartTrov = cartinside[2];
+														cartTrov.push(pagtrov);
+														break
+													}
+
+													if(!pagtrov){
+														cartelle[3] = findFolders(cartInside[2]);
+														if(cartelle[3]){
+															for(ciclo[3] in cartelle[3]){
+																if(!pagtrov){
+																	cartInside[3] = cartInside[2];
+																	cartinside[3].push(cartelle[3][ciclo[3]]);
+																	pagtrov = funzCeckFol(cartInside[3],"id",idPrim);
+
+																	if(pagtrov){
+																		cartTrov = cartinside[3];
+																		cartTrov.push(pagtrov);
+																		break;
+																	}
+
+																}
+															}
+														}
+													}
+
+												}
+											}
+										}
+									}
+
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	if(!pagtrov){
+		return false;
+	}
+	else{
+		return cartTrov;
+	}
+}
+
+// get translations of specific terms set into harp.json to get them globally
+MB.locale.getTrad = function(testoID){
+	var lingua = MB.locale.getLang(current.path);
+	if(typeof translations!=="undefined"){
+		if(typeof translations[lingua]!=="undefined"){
+			if(typeof translations[lingua][testoID]!=="undefined"){
+				if(translations[lingua][testoID]){
+					return translations[lingua][testoID];
+				}
+			}
+		}
+	}
+	return false; 
+}
+
+<%
+// -----------------------------------------------------------------------------
+
+// modules functions
+
+// -----------------------------------------------------------------------------
+
+MB.framework={};
+
+	// get a page template
+	MB.framework.gettemplate = function(options){
+		if(typeof options !== "undefined"){
+			if(typeof options.framework !== "undefined"){
+				var framework = options.framework;
+			}
+			if(typeof options.name !== "undefined"){
+				var name = options.name;
+			}
+			if(typeof options.vars !== "undefined"){
+				var variables = options.vars;
+			}else{
+				var variables = false;
+			}
+		}
+		if(typeof name !== "undefined"){
+			if(name){
+				if(typeof framework === "undefined"){
+					framework = mbfunction.framework;
+				}else if(!framework){
+					framework = mbfunction.framework;
+				}
+				if(!variables){
+					return partial("../../../"+framework+"/templates/"+name+"/"+name);
+				}else{
+					return partial("../../../"+framework+"/templates/"+name+"/"+name, variables);
+				}
+			}
+		}
+		return false;
+	}
+
+	// get a module
+	MB.framework.getmodule = function(options){
+		if(typeof options !== "undefined"){
+			if(typeof options.framework !== "undefined"){
+				var framework = options.framework;
+			}
+			if(typeof options.name !== "undefined"){
+				var name = options.name;
+			}
+			if(typeof options.vars !== "undefined"){
+				var variables = options.vars;
+			}else{
+				var variables = false;
+			}
+		}
+		if(typeof name !== "undefined"){
+			if(name){
+				if(typeof framework === "undefined"){
+					framework = mbfunction.framework;
+				}else if(!framework){
+					framework = mbfunction.framework;
+				}
+				if(!variables){
+					return partial("../../"+framework+"/module/"+name+"/"+name);
+				}else{
+					return partial("../../"+framework+"/module/"+name+"/"+name, variables);
+				}
+			}
+		}
+		return false;
+	}
+
+	// like wordpress function, so you can use it in your css
+	MB.framework.getBodyClass = function(){
+		var bodyClass="";
+
+		if(typeof template !== "undefined"){
+			if(template){
+				bodyClass += " tpl-"+template;
+			}
+		}
+
+		var currentPath = MB.locale.langPath();
+		
+		if(currentPath.length>1){
+			var currentFolder = MB.copyObjJSON(currentPath).pop();
+			bodyClass += " folder-" + currentFolder.join("-");
+		}else{
+			bodyClass += " root";
+		}
+
+		bodyClass += " path-" + currentPath.join("-");
+
+		return bodyClass;
+	}
+
+
+%>

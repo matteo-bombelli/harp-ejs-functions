@@ -1,0 +1,31 @@
+<%
+// -----------------------------------------------------------------------------
+//
+// numbers functions
+//
+// -----------------------------------------------------------------------------
+
+MB.n={};
+
+	MB.n.to2digit = function(numero){
+		
+		if(numero.toString().length<2){
+			numero = "0" + numero.toString();
+		}
+		return numero;
+	}
+		
+	MB.n.to_n_digit = function(numero, lunghezza){
+		
+		var numero2;
+		
+		if(numero.toString().length <= lunghezza){
+			for(var i = numero.toString().length; i < parseInt(lunghezza); i++){
+				numero2 = "0" + numero;
+			}
+		}else{
+			numero2 = numero.toString().slice((numero.toString().length-lunghezza), numero.toString().length)
+		}
+		return numero2;
+	}
+%>

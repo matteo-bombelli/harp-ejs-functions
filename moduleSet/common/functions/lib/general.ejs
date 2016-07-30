@@ -1,0 +1,125 @@
+<%
+// -----------------------------------------------------------------------------
+//
+// general functions
+//
+// -----------------------------------------------------------------------------
+
+MB.general = {};
+
+	// convert array to object keys : ["foo","bar"] -> foo.bar, remember to use public as standard object
+	MB.general.ArrayToProps = function(lista, oggetto){
+		var lista2;
+		var oggetto2;
+
+		if(typeof lista !== "undefined"){
+			if(typeof oggetto === "undefined"){
+				oggetto2 = MB.copyObjJSON(public);
+			}else{
+				oggetto2 = MB.copyObjJSON(oggetto);
+			}
+			lista2 = MB.copyObjJSON(lista);
+			for(var i in lista2){
+				if(typeof oggetto[lista2[i]]!=="undefined"){
+					oggetto2 = oggetto2[lista2[i]];
+				}else{
+					return false;
+				}
+			}
+			return oggetto2;
+		}
+	}
+
+	// convert path to arrays : "foo/bar" -> ["foo","bar"]
+	MB.general.PathToArray = function(filepath){
+		var lista = false;
+		if(typeof filepath !== "undefined"){
+			if(typeof filepath === "string"){
+				var lista = filepath.split("/");
+			}
+		}
+		return lista;
+	}
+
+	// get url to the root of the site
+	MB.general.getBaseUrl = function(lang){
+		if(typeof lang === "undefined"){
+			var lang = false;
+		}
+		var baseUrl="";
+		if(!lang){
+			var profondita = MB.copyObjJSON(current.path).length;  
+		}else{
+			var profondita = MB.copyObjJSON(current.path).length - 1;
+		}
+		for(var i=1; i<profondita; i++){
+			baseUrl = baseUrl+"../";
+		}
+		return baseUrl;
+	}
+
+	// debug variables or the standard variables avaible by harp
+	MB.general.sdebug = function(variabile){
+		
+		if(typeof variabile === "undefined"){
+			variabile = {
+				"current": MB.copyObjJSON(current),
+				"public": MB.copyObjJSON(public),
+				"yield": yield
+			}
+		}
+		return JSON.stringify(variabile);
+	}
+
+    MB.general.getPageProperty = function(variables){
+        
+        var result;
+        var varsStd = {
+            path : MB.copyObjJSON(current.path),
+            property : false
+        };
+        var varsR;
+        
+        if(typeof variables !== "undefined"){
+        
+            for( i in varsStd){
+                if(typeof vars[i] !== "undefined"){
+                    varsR[i] = variables[i];
+                }else{
+                    varsR[i] = varsStd[i];
+                }
+            }
+            if(varsR.path){
+                
+                if(typeof varsR.path === "object"){
+                    
+                    if(varsR.path.length=1){
+                        result = {}
+                        result.pageName = path[0];
+                        if(varsR.property){
+                            result.arrayR = ["_data",result.pageName,varsR.property];
+                            result.value = MB.general.ArrayToProps(result.arrayR, public);
+                        }
+                    }else{
+                        result = {}
+                        var folder = MB.copyObjJSON(varsR.path);
+                        result.pageName = folder[folder.length - 1];
+                        folder.pop();
+                        folder.push("_data",result.pageName);
+                        if(varsR.property){
+                            folder.push(varsR.property);
+                        }
+                        result.arrayR = MB.copyObjJSON(folder);
+                        result.value = MB.general.ArrayToProps(result.arrayR, public);
+                    }
+                    
+                    return result.value;
+                }
+            }
+        }
+        
+        
+        
+        return null;
+    }
+%>
