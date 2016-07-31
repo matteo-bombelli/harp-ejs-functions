@@ -1,6 +1,5 @@
-<%- partial("../../../../"+mbfunction.path) %><%- partial(
-"../../../../moduleSet/common/modules/headFull/headFull.ejs"
-) %>
+<%- partial("../../../../"+mbfunction.path) %><%- 
+MB.framework.getmodule( { name:"headFull", framework:"common", debug:true } ) %>
 <body>
 <%- yield %>
 </body>

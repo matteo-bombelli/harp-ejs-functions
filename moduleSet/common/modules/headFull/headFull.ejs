@@ -8,32 +8,6 @@
 		divider: " - "
 	};
 
-    /*
-	if (FileTitle == "index"){
-		if(typeof PageTitle !== "undefined"){
-			if(PageTitle==""){
-			   headMeta.divider = "";
-			}
-		}
-	}
-
-	if(typeof SiteTitle === "undefined"){
-		if(typeof PageTitle === "undefined"){
-			TitleTag = "Matteo Bombelli - web developer";
-		}else{
-			TitleTag = PageTitle + headMeta.divider +"Matteo Bombelli - web developer";
-		}
-	}else{
-		if(typeof PageTitle === "undefined"){
-			TitleTag = FileTitle + headMeta.divider + SiteTitle;
-		}else{
-			TitleTag = PageTitle + headMeta.divider + SiteTitle;
-		}
-	}
-
-    */
-	// PathBase = MB.general.getBaseUrl();
-
 	noPathBase = true;
 
 	if(typeof onlyOnline !== "undefined"){
@@ -75,7 +49,7 @@
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		
-		<meta name="application-name" content="<%- TitleTag %>" />
+		<meta name="application-name" content="<%- MB.framework.SEO.getTitle() %>" />
 		<meta name="msapplication-config" content="<%- urlBase %>browserconfig.xml" />
 		
 		<link rel="apple-touch-icon" href="<%- uri+'/' %>apple-touch-icon.png">

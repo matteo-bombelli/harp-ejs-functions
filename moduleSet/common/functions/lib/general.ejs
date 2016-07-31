@@ -71,55 +71,55 @@ MB.general = {};
 		return JSON.stringify(variabile);
 	}
 
-    MB.general.getPageProperty = function(variables){
-        
-        var result;
-        var varsStd = {
-            path : MB.copyObjJSON(current.path),
-            property : false
-        };
-        var varsR;
-        
-        if(typeof variables !== "undefined"){
-        
-            for( i in varsStd){
-                if(typeof vars[i] !== "undefined"){
-                    varsR[i] = variables[i];
-                }else{
-                    varsR[i] = varsStd[i];
-                }
-            }
-            if(varsR.path){
-                
-                if(typeof varsR.path === "object"){
-                    
-                    if(varsR.path.length=1){
-                        result = {}
-                        result.pageName = path[0];
-                        if(varsR.property){
-                            result.arrayR = ["_data",result.pageName,varsR.property];
-                            result.value = MB.general.ArrayToProps(result.arrayR, public);
-                        }
-                    }else{
-                        result = {}
-                        var folder = MB.copyObjJSON(varsR.path);
-                        result.pageName = folder[folder.length - 1];
-                        folder.pop();
-                        folder.push("_data",result.pageName);
-                        if(varsR.property){
-                            folder.push(varsR.property);
-                        }
-                        result.arrayR = MB.copyObjJSON(folder);
-                        result.value = MB.general.ArrayToProps(result.arrayR, public);
-                    }
-                    
-                    return result.value;
-                }
-            }
-        }
-        
-        
-        
-        return null;
-    }
+	MB.general.getPageProperty = function(variables){
+		
+		var result;
+		var varsStd = {
+			path : MB.copyObjJSON(current.path),
+			property : false
+		};
+		var varsR;
+		
+		if(typeof variables !== "undefined"){
+		
+			for( i in varsStd){
+				if(typeof vars[i] !== "undefined"){
+					varsR[i] = variables[i];
+				}else{
+					varsR[i] = varsStd[i];
+				}
+			}
+			if(varsR.path){
+				
+				if(typeof varsR.path === "object"){
+					
+					if(varsR.path.length=1){
+						result = {}
+						result.pageName = path[0];
+						if(varsR.property){
+							result.arrayR = ["_data",result.pageName,varsR.property];
+							result.value = MB.general.ArrayToProps(result.arrayR, public);
+						}
+					}else{
+						result = {}
+						var folder = MB.copyObjJSON(varsR.path);
+						result.pageName = folder[folder.length - 1];
+						folder.pop();
+						folder.push("_data",result.pageName);
+						if(varsR.property){
+							folder.push(varsR.property);
+						}
+						result.arrayR = MB.copyObjJSON(folder);
+						result.value = MB.general.ArrayToProps(result.arrayR, public);
+					}
+					
+					return result.value;
+				}
+			}
+		}
+		
+		
+		
+		return null;
+	}
 %>

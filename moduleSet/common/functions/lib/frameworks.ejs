@@ -9,11 +9,12 @@ MB.framework={};
     MB.framework.attivo="attivo";
 	// get a page template
 	MB.framework.gettemplate = function(options){
+		
 		if(typeof options !== "undefined"){
 			if(typeof options.framework !== "undefined"){
 				var framework = options.framework;
 			}else{
-                // var framework = mbfunction.framework;
+                var framework = mbfunction.framework;
             }
 			if(typeof options.name !== "undefined"){
 				var name = options.name;
@@ -24,6 +25,7 @@ MB.framework={};
 				var variables = false;
 			}
 		}
+		
 		if(typeof name !== "undefined"){
 			if(name){
 				if(typeof framework === "undefined"){
@@ -31,6 +33,7 @@ MB.framework={};
 				}else if(!framework){
 					framework = mbfunction.framework;
 				}
+				// return "framework:"+framework+", relativepath: "+"../../../"+framework+"/templates/"+name+"/"+name ;
 				if(!variables){
 					return partial("../../../"+framework+"/templates/"+name+"/"+name);
 				}else{
@@ -39,9 +42,9 @@ MB.framework={};
 			}
 		}
         
-        valori = "ciao";
+        // valori = "ciao";
         
-		// return false;
+		return false;
 	}
 
 	// get a module
@@ -58,6 +61,9 @@ MB.framework={};
 			}else{
 				var variables = false;
 			}
+			if(typeof options.debug !== "undefined"){
+
+			}
 		}
 		if(typeof name !== "undefined"){
 			if(name){
@@ -66,10 +72,11 @@ MB.framework={};
 				}else if(!framework){
 					framework = mbfunction.framework;
 				}
+				// return "../../../"+framework+"/module/"+name+"/"+name;
 				if(!variables){
-					return partial("../../../"+framework+"/module/"+name+"/"+name);
+					return partial("../../../"+framework+"/modules/"+name+"/"+name);
 				}else{
-					return partial("../../../"+framework+"/module/"+name+"/"+name, variables);
+					return partial("../../../"+framework+"/modules/"+name+"/"+name, variables);
 				}
 			}
 		}
