@@ -4,7 +4,7 @@
 		"SEOdescription":false,
 		"template":false,
 		"PageTitle":"",
-        "uri":"matteobombelli.tk",
+        "uri":" ",
 		"socials":{
 			"shareValues":"true",
 			"fb":{
@@ -37,7 +37,7 @@
 				"numbers",
 				"frameworks"
 			],
-			"framework":"MBsite",
+			"framework":"harpEjsFunctions",
 			"lang":{
 				"stdObj":[
 					{
