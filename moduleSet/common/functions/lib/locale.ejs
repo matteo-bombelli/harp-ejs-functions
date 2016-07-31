@@ -416,5 +416,53 @@ MB.locale.getTrad = function(testoID){
 	return false; 
 }
 
+// get translations of specific terms set into harp.json to get them globally version 2
+MB.locale.getTradA = function(variables){
+	var varStd = {
+		id:false,
+		lang : false,
+		path : MB.copyObjJSON(current.path),
+		debug : false
+	};
+
+	var result;
+	var operator;
+
+	if(typeof variables !== "undefined"){
+		for( i in varsStd){
+			if(typeof variables[i] !== "undefined"){
+				operator[i] = variables[i];
+			}else{
+				operator[i] = varsStd[i];
+			}
+		}
+	}else{
+		operator = varStd;
+	}
+	
+	if(!operator.lang){
+		if(operator.path){
+			operator.lang = MB.locale.getLang(operator.path);
+		}else{
+			operator.lang = MB.locale.getLang(MB.copyObjJSON( current.path ) );
+		}
+	}
+
+	if(operator.id){
+		if(typeof translations!=="undefined"){
+			if(typeof translations[operator.lang]!=="undefined"){
+				if(typeof translations[operator.lang][operator.id]!=="undefined"){
+					if(translations[operator.lang][operator.id]){
+						return translations[operator.lang][operator.id];
+					}
+				}
+			}
+		}
+	}
+	
+	MB.logErrors( { name:"MB.locale.getTradA", values: MB.copyObjJSON(operator) });
+
+	return false;
+}
 
 %>

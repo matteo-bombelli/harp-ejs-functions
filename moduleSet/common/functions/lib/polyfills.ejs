@@ -38,4 +38,36 @@ MB.checkUnderscore = function(){
 	}
 	return true;
 }
+
+// function to write if other functions has errors (need to be called...)
+MB.logErrors(variables){
+	var varsStd={
+		name:"no name function ",
+		values: "no values given"
+	};
+	var operator;
+	var resoutlt;
+
+	if(typeof variables !== "undefined"){
+		for( i in varsStd){
+			if(typeof variables[i] !== "undefined"){
+				operator[i] = variables[i];
+			}else{
+				operator[i] = varsStd[i];
+			}
+		}
+	}else{
+		operator = MB.copyObjJSON(varStd);
+	}
+	if(typeof debug !== "undefined"){
+		if(debug){
+			%>
+			<%- operator.name %>
+			( <%- JSON.stringify(operator.values) %> ); 
+			full values: <%- JSON.stringify(operator) %>
+			<%
+		}
+	}
+}
+
 %>

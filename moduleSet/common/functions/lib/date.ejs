@@ -8,66 +8,65 @@
 
 MB.data = {};
 
-	MB.data.ToArray = function(dataCal){
-		
-		var datanum = Date.parse(dataCal);
-		var dataArray = {
-			DD : datanum.getDate(),
-			MM : datanum.getMonth() + 1,
-			YYYY : datanum.getFullYear(),
-			hh : datanum.getHours(),
-			mm : datanum.getMinutes(),
-			ss : datanum.getSeconds(),
-			DW : datanum.gatDay() + 1
-		}
-		return dataArray;
+MB.data.ToArray = function(dataCal){
+	
+	var datanum = Date.parse(dataCal);
+	var dataArray = {
+		DD : datanum.getDate(),
+		MM : datanum.getMonth() + 1,
+		YYYY : datanum.getFullYear(),
+		hh : datanum.getHours(),
+		mm : datanum.getMinutes(),
+		ss : datanum.getSeconds(),
+		DW : datanum.gatDay() + 1
 	}
+	return dataArray;
+}
 
-	// express date italian way:
-	MB.data.it = function(dataCal, tipo, divisore){
-		
-		if (typeof dataCal !== "undefined"){
-		
-			var dataArray = MB.data.ToArray(dataCal);
-			var dataText = dataArray.DD + "/" + dataArray.MM + "/" + dataArray.YYYY;
-			
-			if (typeof tipo !== "undefined"){
-			
-				var giorniSett=["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
-				var mesi=["gennaio","febbraio","marzo","aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
-				
-				if (tipo=="testoCompleto"){
-				
-					dataText = giorniSett[dataArray.DW-1] + ", " + dataArray.DD + " " + 
-						mesi[dataArray.MM - 1] + " " + dataArray.YYYY + ", alle ore " + 
-						dataArray.hh + ":" + dataArray.mm;
-						
-				}else if(tipo=="arrayTesti"){
-				
-					dataText = dataArray;
-					dataText.mese = mesi[dataArray.MM - 1];
-					dataText.giorno = giorniSett[dataArray.DW-1];
-												
-				}
-			}
-		}else{
-			var dataText="non hai messo la data";
-		}
-		return dataText;
-	}
-
-	// express date socials way: ex "2013-09-17T05:59:00+01:00" automatically include +1 cause I'm from Italy, 
-	MB.data.DataSOC = function(dataCal, timeshift){
-		
-		if(typeof timeshift === "undefined"){
-			timeshift = "+01:00";
-		}
+// express date italian way:
+MB.data.it = function(dataCal, tipo, divisore){
+	
+	if (typeof dataCal !== "undefined"){
+	
 		var dataArray = MB.data.ToArray(dataCal);
-		var dataText = MB.n.to_n_digit(dataArray.YYYY, 4) + "-" + MB.n.to2digit(dataArray.MM) + 
-			"-" + MB.n.to2digit(dataArray.DD) + "T" + MB.n.to2digit(dataArray.hh) + 
-			":" + MB.n.to2digit(dataArray.ss) + timeshift;
-		return dataText;
+		var dataText = dataArray.DD + "/" + dataArray.MM + "/" + dataArray.YYYY;
+		
+		if (typeof tipo !== "undefined"){
+		
+			var giorniSett=["lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato", "domenica"];
+			var mesi=["gennaio","febbraio","marzo","aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
+			
+			if (tipo=="testoCompleto"){
+			
+				dataText = giorniSett[dataArray.DW-1] + ", " + dataArray.DD + " " + 
+					mesi[dataArray.MM - 1] + " " + dataArray.YYYY + ", alle ore " + 
+					dataArray.hh + ":" + dataArray.mm;
+					
+			}else if(tipo=="arrayTesti"){
+			
+				dataText = dataArray;
+				dataText.mese = mesi[dataArray.MM - 1];
+				dataText.giorno = giorniSett[dataArray.DW-1];
+											
+			}
+		}
+	}else{
+		var dataText="non hai messo la data";
 	}
+	return dataText;
+}
 
+// express date socials way: ex "2013-09-17T05:59:00+01:00" automatically include +1 cause I'm from Italy, 
+MB.data.DataSOC = function(dataCal, timeshift){
+	
+	if(typeof timeshift === "undefined"){
+		timeshift = "+01:00";
+	}
+	var dataArray = MB.data.ToArray(dataCal);
+	var dataText = MB.n.to_n_digit(dataArray.YYYY, 4) + "-" + MB.n.to2digit(dataArray.MM) + 
+		"-" + MB.n.to2digit(dataArray.DD) + "T" + MB.n.to2digit(dataArray.hh) + 
+		":" + MB.n.to2digit(dataArray.ss) + timeshift;
+	return dataText;
+}
 
 %>

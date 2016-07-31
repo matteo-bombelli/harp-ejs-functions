@@ -4,13 +4,20 @@ if(typeof mbfunction !== "undefined"){
     if(typeof mbfunction.libraries !== "undefined"){
         MBlibraries = true;
         
-        // if(typeof MB === "undefined"){
+		var MBneedToInstall = true;
+
+		if(typeof MBversion !== "undefined" ){
+			if (MBversion == partial("version.ejs"){
+				MBneedToInstall = false;
+				MBneedToInstall = true;
+			}
+		}
+		if( MBneedToInstall ){
             MB={};
             for(var i in mbfunction.libraries){
-                %><%- partial("lib/"+mbfunction.libraries[i]); %><%
+                partial("lib/"+mbfunction.libraries[i]);
             }
-        // }
-        
+		}
     }
 }
 if(!MBlibraries){

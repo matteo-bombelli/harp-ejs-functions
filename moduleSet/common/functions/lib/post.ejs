@@ -13,6 +13,77 @@ MB.posts = {};
 		MBconfigs[lang];
 	}
 
+	// function to retieve configurations for posts
+	MB.posts.configA = function(variables){
+		var varStd = {
+			postType:"blog",
+			parameter:false,
+			lang : false
+		};
+
+		var result = {};
+		var operator = {};
+
+		if(typeof variables !== "undefined"){
+			for( i in varsStd){
+				if(typeof variables[i] !== "undefined"){
+					operator[i] = variables[i];
+				}else{
+					operator[i] = varsStd[i];
+				}
+			}
+		}else{
+			operator = varStd;
+		}
+
+		if(!operator.lang){
+			operator.lang = MB.locale.getLang(MB.copyObjJSON(current.path));
+		}
+
+
+		var postStdConf = MB.copyObjJSON( MBconfigs[lang][postType] );
+		
+		operator.arrayVal = MB.copyObjJSON( 
+			MB.locale.getTradA( 
+				{ 
+					id:"_post_types", 
+					lang: operator.lang 
+				}
+			)
+		);
+		
+		if(typeof operator.arrayVal[operator.postType] !== "undefined"){
+			if(operator.parameter){
+				if(typeof operator.arrayVal[operator.postType][operator.parameter] !== "undefined"){
+					result = MB.copyObjJSON( operator.arrayVal )[operator.postType][operator.parameter];
+					if(result){
+						return result;
+					}
+				}
+			}else{
+				result = MB.copyObjJSON( operator.arrayVal )[operator.postType];
+				if(result){
+					return result;
+				}
+			}
+		}
+
+		result = false;
+
+		MB.logErrors(
+			{
+				name:"no name function ",
+				values: {
+					result: result,
+					operator: operator
+				}
+			}
+		);
+
+		return result;
+	}
+
+	// retrieve configurations for custom post types based (oldr version)
 	MB.posts.configC = function(postType, parametro){
 		var pathA = MB.copyObjJSON(current.path);
 		var lang = MB.locale.getLang(pathA);

@@ -54,11 +54,17 @@
 				"it":{
 					"blog":{
 						"folder":"blog"
+					},
+					"docs":{
+						"folder":"documentazione"
 					}
 				},
 				"en":{
 					"blog":{
 						"folder":"blog"
+					},
+					"docs":{
+						"folder":"docs"
 					}
 				}
 			}
@@ -66,57 +72,88 @@
 		"translations":{
 			"id":{
 				"it":"id",
-				"eng":"id"
+				"en":"id"
+			},
+			"contact_us":{
+				"it":"contattaci",
+				"en":"contact_us"
+			},
+			"_post_types":{
+				"it":{
+					"blog":{
+						"name":"Blog",
+						"folder":"blog"
+					},
+					"docs":{
+						"name":"Documentazione",
+						"folder":"documentazione",
+						"orderBy":"priority",
+						"orderDirection":"ASC"
+					}
+				},
+				"en":{
+					"blog":{
+						"name":"Blog",
+						"folder":"blog"
+					},
+					"docs":{
+						"name":"Documentation",
+						"folder":"docs",
+						"orderBy":"priority",
+						"orderDirection":"ASC"
+					}
+				}
+			},
+
+			"site_menu":{
+				"it":[
+					{
+						"name":"Homepage",
+						"url":"index.html"
+					},
+					{
+						"name":"Documentazione",
+						"url":"doc/index.html"
+					},
+					{
+						"name":"Sorgenti su GitHub",
+						"url":"https://github.com/matteo-bombelli/harp-ejs-functions",
+						"target":"_blank"
+					},
+					{
+						"name":"About",
+						"url":"about.html"
+					},
+					{
+						"name":"Privacy",
+						"url":"terms-and-services.html"
+					}
+				],
+				"en":[
+					{
+						"name":"Homepage",
+						"url":"index.html"
+					},
+					{
+						"name":"Docs",
+						"url":"doc/index.html"
+					},
+					{
+						"name":"GitHubSources",
+						"url":"https://github.com/matteo-bombelli/harp-ejs-functions",
+						"target":"_blank"
+					},
+					{
+						"name":"About",
+						"url":"about.html"
+					},
+					{
+						"name":"Privacy",
+						"url":"terms-and-services.html"
+					}
+				]
 			}
-		},
-		"siteMenu":{
-			"LocalePages":true,
-			"it":[
-				{
-					"name":"Homepage",
-					"url":"index.html"
-				},
-				{
-					"name":"Documentazione",
-					"url":"doc/index.html"
-				},
-				{
-					"name":"Sorgenti su GitHub",
-					"url":"https://github.com/matteo-bombelli/harp-ejs-functions",
-					"target":"_blank"
-				},
-				{
-					"name":"About",
-					"url":"about.html"
-				},
-				{
-					"name":"Privacy",
-					"url":"terms-and-services.html"
-				}
-			],
-			"en":[
-				{
-					"name":"Homepage",
-					"url":"index.html"
-				},
-				{
-					"name":"Documentazione",
-					"url":"doc/index.html"
-				},
-				{
-					"name":"GitHubSources",
-					"url":"https://github.com/matteo-bombelli/harp-ejs-functions",
-					"target":"_blank"
-				},
-				{
-					"name":"About",
-					"url":"about.html"
-				},
-				{
-					"name":"Privacy",
-					"url":"terms-and-services.html"
-				}
-			]
+			
 		}
 	},
 	"gulpVars":{

@@ -83,12 +83,13 @@ MB.general = {};
 		if(typeof variables !== "undefined"){
 		
 			for( i in varsStd){
-				if(typeof vars[i] !== "undefined"){
+				if(typeof variables[i] !== "undefined"){
 					varsR[i] = variables[i];
 				}else{
 					varsR[i] = varsStd[i];
 				}
 			}
+
 			if(varsR.path){
 				
 				if(typeof varsR.path === "object"){
