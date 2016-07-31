@@ -38,7 +38,7 @@ All the functions are divided by *categories* (or *libraries* ):
 *   date
 *   number
 *   locale (multilingual utilities);
-*   frameworks (to better use partials);
+*   frameworks (to use partials better);
 
 All the system is extensible by creating new functions and categories. 
 Adding files and elements to the `mbfunction.library` global array in harp.json will make 
