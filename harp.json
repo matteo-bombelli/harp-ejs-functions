@@ -68,6 +68,55 @@
 				"it":"id",
 				"eng":"id"
 			}
+		},
+		"siteMenu":{
+			"LocalePages":true,
+			"it":[
+				{
+					"name":"Homepage",
+					"url":"index.html"
+				},
+				{
+					"name":"Documentazione",
+					"url":"doc/index.html"
+				},
+				{
+					"name":"Sorgenti su GitHub",
+					"url":"https://github.com/matteo-bombelli/harp-ejs-functions",
+					"target":"_blank"
+				},
+				{
+					"name":"About",
+					"url":"about.html"
+				},
+				{
+					"name":"Privacy",
+					"url":"terms-and-services.html"
+				}
+			],
+			"en":[
+				{
+					"name":"Homepage",
+					"url":"index.html"
+				},
+				{
+					"name":"Documentazione",
+					"url":"doc/index.html"
+				},
+				{
+					"name":"GitHubSources",
+					"url":"https://github.com/matteo-bombelli/harp-ejs-functions",
+					"target":"_blank"
+				},
+				{
+					"name":"About",
+					"url":"about.html"
+				},
+				{
+					"name":"Privacy",
+					"url":"terms-and-services.html"
+				}
+			]
 		}
 	},
 	"gulpVars":{

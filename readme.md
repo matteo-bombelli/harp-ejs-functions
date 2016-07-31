@@ -8,7 +8,7 @@ It doens't work for now (some scripts are not ended).
 
 The reason for putting that online is to "inspire" and search for help maybe on this work.
 
-## Im short
+## In short
 
 * **name** : Harp ejs functions
 * **goal** : Easier creation and management of harp static websites
@@ -21,6 +21,15 @@ All this features are made to be used with [harpjs](http://harpjs.com/) on top o
 [here](http://harpjs.com/docs/quick-start) you can see also the install guide for harpjs
 
 A list of functions to create a website in harp with more features using ejs templating engine.
+
+## First Informations
+
+A little starting point for developing with my functions is placed in readmes in this two specific folders:
+
+* [moduleSet](https://github.com/matteo-bombelli/harp-ejs-functions/tree/master/moduleSet)
+* [functions](https://github.com/matteo-bombelli/harp-ejs-functions/tree/master/moduleSet/common/functions)
+
+Also the source code is (partially) commented so more informations can be found there...
 
 ## Goals
 
