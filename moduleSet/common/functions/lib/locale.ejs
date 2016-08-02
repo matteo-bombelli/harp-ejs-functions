@@ -73,7 +73,7 @@ MB.locale.langPath = function(pagePath){
 	if(typeof pagePath === "undefined"){
 		pagePathR = MB.copyObjJSON(current.path);
 	}else{
-		pagePathR = MB.copyObjJSON(PagePath);
+		pagePathR = MB.copyObjJSON(pagePath);
 	}
 
 	if(MB.locale.getLang(pagePathR) == MB.locale.getConf("base")){
@@ -98,8 +98,8 @@ MB.locale.getBreadcrumbs = function(pagePath){
 		pageUrl = MB.locale.basePath(MB.copyObjJSON(current.path));
 	}else{
 		pagePathF = MB.copyObjJSON(current.path);
-		pagePathR = MB.locale.langPath(MB.copyObjJSON(PagePath));
-		pageUrl = MB.locale.basePath(MB.copyObjJSON(PagePath));
+		pagePathR = MB.locale.langPath(MB.copyObjJSON(pagePath));
+		pageUrl = MB.locale.basePath(MB.copyObjJSON(pagePath));
 	}
 	var lang = MB.locale.getLang(pagePathF);
 
@@ -133,7 +133,7 @@ MB.locale.basePath = function(pagePath){
 	if(typeof pagePath === "undefined"){
 		pagePathR = MB.locale.langPath(current.path);
 	}else{
-		pagePathR = MB.locale.langPath(PagePath);
+		pagePathR = MB.locale.langPath(pagePath);
 	}
 
 	var deepness = MB.copyObjJSON(pagePathR).length;

@@ -6,13 +6,16 @@ if(typeof mbfunction !== "undefined"){
         
 		var MBneedToInstall = true;
 
+		// check the version of MB if it is not definited or changed will reload MB functions libraries.
+		/*
 		if(typeof MBversion !== "undefined" ){
 			if (MBversion == partial("version.ejs"){
-				MBneedToInstall = false;
-				MBneedToInstall = true;
+				// MBneedToInstall = false; 
+				// in production i would comment it (checks the version of MB if it is different) and leave the false 
 			}
 		}
-		if( MBneedToInstall ){
+		*/
+		if(MBneedToInstall){
             MB={};
             for(var i in mbfunction.libraries){
                 partial("lib/"+mbfunction.libraries[i]);
@@ -20,9 +23,13 @@ if(typeof mbfunction !== "undefined"){
 		}
     }
 }
+
+// not so usefull but can be a good choiche for old machines...
+/*
 if(!MBlibraries){
     if(typeof MB === "undefined"){
         partial(functions.ejs);
     }
 }
+*/
 %>

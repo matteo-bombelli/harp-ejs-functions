@@ -19,28 +19,34 @@ MB.BasePath = function(variables){
 	var varsStd = {
 		path: MB.copyObj(current.source)
 	};
+
 	if(typeof variables === "undefined"){
 		variables = varsStd;
-	};
+	}
+
 	var PathBase = "";
-	var numLivelli = current.path.length - 1;
+	var numLivelli = variables.path.length - 1;
+
 	for (var i=0; i<numLivelli; i++){
 		PathBase = PathBase + "../";
 	}
+
 	return PathBase;
 }
 
 MB.checkUnderscore = function(){
+	/*
 	if(typeof _ === "undefined"){
 		return false;
 	}else{
 		return true;
 	}
+	*/
 	return true;
 }
 
 // function to write if other functions has errors (need to be called...)
-MB.logErrors(variables){
+MB.logErrors = function(variables){
 	var varsStd={
 		name:"no name function ",
 		values: "no values given"
@@ -61,11 +67,7 @@ MB.logErrors(variables){
 	}
 	if(typeof debug !== "undefined"){
 		if(debug){
-			%>
-			<%- operator.name %>
-			( <%- JSON.stringify(operator.values) %> ); 
-			full values: <%- JSON.stringify(operator) %>
-			<%
+			
 		}
 	}
 }

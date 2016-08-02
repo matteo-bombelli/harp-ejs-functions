@@ -50,6 +50,13 @@ MB.framework={};
 
 	// get a module
 	MB.framework.getmodule = function(options){
+		/*
+		varStd={
+			framework: framework,
+			name: false, // this is required
+			variables: false // with this object you can pass variables to the module
+		}
+		*/
 		if(typeof options !== "undefined"){
 			if(typeof options.framework !== "undefined"){
 				var framework = options.framework;
@@ -84,7 +91,8 @@ MB.framework={};
 		return false;
 	}
 
-	// like wordpress function, so you can use it in your css
+	// like wordpress function, so you can use it in your css 
+	// (I think it is relevant only for the page you're in...)
 	MB.framework.getBodyClass = function(){
 		var bodyClass="";
 
@@ -108,8 +116,10 @@ MB.framework={};
 		return bodyClass;
 	}
     
+	// the SEO/filePages part
     MB.framework.SEO={};
 
+	// Get the title of a page
     MB.framework.SEO.getTitle = function(variables){
         var SEOtitle = false;
         
@@ -121,7 +131,8 @@ MB.framework={};
         
         var SEO={};
         
-        if(typeof vars !== "undefined"){
+		// populate missing fields with the standard values
+        if(typeof variables !== "undefined"){
             for(i in SEOstd){
                 if(typeof variables[i] !== "undefined"){
                     SEO[i] = variables[i];
@@ -133,54 +144,93 @@ MB.framework={};
             SEO = MB.copyObjJSON(SEOstd);
         }
         
+		// first start searching for SEO title in the _data.json
+		// iF we are using the function for the page we're in we can take 
+		// them directly by vars
         if(MB.copyObjJSON(SEO.path) == MB.copyObjJSON(current.source)){
             if(typeof SiteTitle !== "undefined"){
                 SEO.SiteTitle = SiteTitle;
-            }
+            }else{
+				SEO.PageTitle = false ;
+			}
             if(typeof PageTitle !== "undefined"){
                 SEO.PageTitle = PageTitle;
-            }
+            }else{
+				SEO.PageTitle = false ;
+			}
         }else{
-            
+
+			// if you are not in the page you are searching title for.
+            if(MB.general.getPageProperty({path : SEO.path, property : "PageTitle" } )){
+				SEO.PageTitle = MB.general.getPageProperty( {path : SEO.path, property : "PageTitle" } ); 
+			}else{
+				SEO.PageTitle = false ;
+			}
+			if(MB.general.getPageProperty({path : SEO.path, property : "SiteTitle" } )){
+				SEO.SiteTitle = MB.general.getPageProperty({path : SEO.path, property : "SiteTitle" } );
+			}else{
+				if(typeof SiteTitle !== "undefined"){
+					SEO.SiteTitle = SiteTitle;
+				}else{
+					SEO.SiteTitle = false;
+				}
+			}
         }
-        
-        if(typeof PageTitle !== "undefined"){
-            if(PageTitle){
-                SEOtitle = PageTitle;
-                if(typeof SiteTitle !== "undefined"){
-                    if(SiteTitle){
-                        SEOtitle = SEOtitle + SEO.divider + SiteTitle;
-                    }
-                }
-                return Pagetitle;
-            }
-        } 
-        if(MB.copyObj(current.path)==["index"]){
-            // This is the homepage of the site
-            SEOtitle = SiteTitle;
-            return SEOtitle;
-        }
-        
-        if(!SEOtitle){
-            if(SiteTitle){
-                
-                if(MB.copyObjJSON(current.source) != "index"){
-                    SEOtitle = MB.copyObjJSON(current.source).replace("-", " ");
-                    if(typeof SiteTitle !== "undefined"){
-                        if(SiteTitle){
-                            SEOtitle = SEOtitle + SEO.divider + SiteTitle;
-                        }
-                    }
-                }
-                
-                // last chanche return the Site Title
-                
-                SEOtitle = SiteTitle;
-                return SEOtitle;
-            }
-            
-        }
-        
+
+		// if the title is not already set
+		if(!SEO.PageTitle){
+			
+			if(typeof SEO.SiteTitle !== "undefined"){
+				if(SEO.SiteTitle){
+					// if you are searching the title for the homepage, 
+					// the best solution is to use the site name
+					SEO.langPath = MB.locale.langPath(SEO.path);
+					if(MB.copyObjJSON(MB.locale.langPath(SEO.path))==["index"]){
+						SEO.PageTitle = SEO.SiteTitle;
+						return SEO.PageTitle;
+					}
+				}
+			}
+			// if you are not in the index of a folder i'll take the name of 
+			// the file sanitized
+			if( MB.copyObjJSON(SEO.path[SEO.path.length - 1]) != "index" ){
+				var fileName = SEO.path[SEO.path.length - 1];
+				SEO.PageTitle = fileName.replace("-", " ").replace("_", " ");
+			}else{
+				// if you are in the index of a subfolder it is possible to 
+				// sanitized the name of the folder
+				if(typeof SEO.SiteTitle !== "undefined"){
+					SEO.langPath = MB.locale.langPath(SEO.path);
+					if(SEO.path.length>1){
+						SEO.PageTitle = MB.copyObjJSON(SEO.path[SEO.path.length - 2]).replace(/-/g," ").replace(/_/g," ") ;
+					}
+				}
+			}
+		}
+
+		if(SEO.PageTitle){
+			if(typeof SEO.SiteTitle !== "undefined"){
+				if(SEO.SiteTitle){
+					// if everything is ok we can use PageTitle and SiteTitle
+					SEO.PageTitle = SEO.PageTitle + SEO.divider + SEO.SiteTitle;
+					return SEO.PageTitle;
+				}else{
+					// else only the page title
+					return SEO.PageTitle;
+				}
+			}
+		}else{
+
+			//last chanche SiteTitle
+			if(typeof SEO.SiteTitle !== "undefined"){
+				if(SEO.SiteTitle){
+					return SEO.SiteTitle;
+				}
+			}
+		}
+
+		// No way...
+		return false;
     }
 
 %>

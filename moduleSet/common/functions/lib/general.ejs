@@ -18,7 +18,9 @@ MB.general = {};
 			}else{
 				oggetto2 = MB.copyObjJSON(oggetto);
 			}
+
 			lista2 = MB.copyObjJSON(lista);
+
 			for(var i in lista2){
 				if(typeof oggetto[lista2[i]]!=="undefined"){
 					oggetto2 = oggetto2[lista2[i]];
@@ -28,6 +30,43 @@ MB.general = {};
 			}
 			return oggetto2;
 		}
+	}
+
+	// convert array to object keys : ["foo","bar"] -> foo.bar, 
+	// using object vars. am I using too much copyObjJSON ? :( 
+	MB.general.ArrayToPropsA = function(variables){
+		var varStd = {
+			path: MB.copyObjJSON(current.source),
+			object: public
+		}
+
+		var operator={};
+
+        if(typeof variables !== "undefined"){
+            for(i in varStd){
+                if(typeof variables[i] !== "undefined"){
+                    operator[i] = variables[i];
+                }else{
+                    operator[i] = varStd[i];
+                }
+            }
+        }else{
+            operator = MB.copyObjJSON(varStd);
+        }
+
+		var pathA = MB.copyObjJSON(operator.path);
+
+		var objectA = MB.copyObjJSON(operator.object);
+
+		for(var i in pathA){
+			if(typeof objectA[pathA[i]]!=="undefined"){
+				objectA = MB.copyObjJSON(objectA[pathA[i]]);
+			}else{
+				return false;
+			}
+		}
+
+		return objectA;
 	}
 
 	// convert path to arrays : "foo/bar" -> ["foo","bar"]
@@ -71,6 +110,7 @@ MB.general = {};
 		return JSON.stringify(variabile);
 	}
 
+	// get properties of a specific page
 	MB.general.getPageProperty = function(variables){
 		
 		var result;
